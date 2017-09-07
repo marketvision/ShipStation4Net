@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShipStation4Net", "ShipStation4Net\ShipStation4Net.csproj", "{0E186C79-F0D6-48D2-B6A0-858A5D773434}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShipStation4Net.Tests", "ShipStation4Net.Tests\ShipStation4Net.Tests.csproj", "{D1FA2CBB-CF6F-49CD-AC28-9E86E38F53D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E186C79-F0D6-48D2-B6A0-858A5D773434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E186C79-F0D6-48D2-B6A0-858A5D773434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E186C79-F0D6-48D2-B6A0-858A5D773434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E186C79-F0D6-48D2-B6A0-858A5D773434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1FA2CBB-CF6F-49CD-AC28-9E86E38F53D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1FA2CBB-CF6F-49CD-AC28-9E86E38F53D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1FA2CBB-CF6F-49CD-AC28-9E86E38F53D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1FA2CBB-CF6F-49CD-AC28-9E86E38F53D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A27FA1F-960D-4977-88B2-1952F5247F14}
+	EndGlobalSection
+EndGlobal
