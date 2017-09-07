@@ -288,4 +288,5 @@ __pycache__/
 *.xsd.cs
 
 # Unit Test Configuration Files
+ShipStation4Net.Tests/configuration.json
 ShipStation4Net.Tests/Results/*
