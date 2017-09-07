@@ -286,3 +286,6 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# Unit Test Configuration Files
+ShipStation4Net.Tests/Results/*
