@@ -1,10 +1,6 @@
 using Newtonsoft.Json;
 using ShipStation4Net.Clients;
-using ShipStation4Net.Exceptions;
-using System;
 using System.IO;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace ShipStation4Net.Tests
 {

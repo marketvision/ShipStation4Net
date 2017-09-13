@@ -30,6 +30,7 @@ namespace ShipStation4Net
         public int ApiLimit { get; set; }
         public int RecordsPerPage { get; set; }
         public bool AllowDeletions { get; set; }
+        public string PartnerId { get; set; }
 
         public Configuration()
         {
