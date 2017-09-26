@@ -27,7 +27,7 @@ test_script:
   - cmd: dotnet restore ./ShipStation4Net.Tests/ShipStation4Net.Tests.csproj --verbosity m
   # run the unit tests (requires changing into the test directory)
   - cmd: cd ShipStation4Net.Tests
-  - cmd: dotnet xunit
+  - cmd: dotnet test
 on_finish :
   # any cleanup in here
 deploy: off
