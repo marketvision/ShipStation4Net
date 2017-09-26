@@ -6,7 +6,8 @@ branches:
 init:
   - cmd: git config --global core.autocrlf true
 environment:
-  auth: 'secure: 8Se0nRu7qMKr7KHMA+37qg=='
+  auth:
+    secure: uERP0DBsU76Ftc3PyuHsOko4tVg5EakpBoJkT4s+T89xEiluSj1HRHt45zUuhiH7UaZKzPkU5U0I5uImh8s9yOVFBLSGx1cma+a1j6uRBenRe3eFeMqYWd3cIg1zDka1
   carrier_test:
     secure: wGR8bEFYPnu10Gg271Z0Zz2es8qECmLKa+l0al6KiJGj+z2++O4PLCHDh5BOXauXdD2zLDzomIC4Dofpc2yRaJtcRvCTO39EZQ7O1DcP052+u1ExTlL4kqwedb41wO6uvMfc5d2Z+9R63UQAoFGXqqaRmozGtFYnWnUJDbilrvDlvGc/3mZ8JSiCODvTs3GaAtsbW1mlFdvXulsXPLE6zeDen241UgkfM/NNwiAU+fk=
   customer_test:
