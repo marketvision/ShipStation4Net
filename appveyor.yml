@@ -1,4 +1,4 @@
-version: '1.0.{build}'
+version: '0.9.{build}'
 image: Visual Studio 2017
 branches:
   only:
@@ -18,13 +18,13 @@ build_script:
 after_build:
   # For once the build has completed
 artifacts:
- - path: '\src\bin\Debug\netcoreapp1.1\publish'
+ - path: '\ShipStation4Net\bin\Debug\netcoreapp2.0\publish'
    name: ShipStation4Net
    type: Auto
 clone_depth: 1
 test_script:
   # restore packages for our unit tests
-  - cmd: dotnet restore ./ShipStation4Net.Tests/ShipStation4Net.Tests.csproj --verbosity m --infer-runtimes
+  - cmd: dotnet restore ./ShipStation4Net.Tests/ShipStation4Net.Tests.csproj --verbosity m
   # run the unit tests (requires changing into the test directory)
   - cmd: cd ShipStation4Net.Tests
   - cmd: dotnet xunit
