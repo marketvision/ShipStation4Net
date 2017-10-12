@@ -47,7 +47,11 @@ namespace ShipStation4Net.Clients
         public async Task<IList<Product>> GetAllPagesAsync(IFilter filter)
         {
             var items = new List<Product>();
-            filter = filter ?? new ProductsFilter { Page = 1, PageSize = 500 };
+            filter = filter ?? new ProductsFilter ();
+
+            filter.Page = 1;
+            filter.PageSize = 500;
+
             var pageOne = await GetDataAsync<ProductsPaginatedResponse>((ProductsFilter)filter);
             items.AddRange(pageOne.Items);
             items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, (ProductsFilter)filter));
@@ -57,17 +61,27 @@ namespace ShipStation4Net.Clients
 
         public async Task<IList<Product>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null)
         {
-            if (pageSize > 500)
+            if (pageSize < 1 || pageSize > 500)
             {
-                pageSize = 500;
+                throw new ArgumentOutOfRangeException("pageSize", "Should be in range 1..500");
             }
-            filter = filter ?? new ProductsFilter { Page = page, PageSize = pageSize };
+
+            filter = filter ?? new ProductsFilter();
+
+            filter.Page = page;
+            filter.PageSize = pageSize;
+
             var response = await GetDataAsync<ProductsPaginatedResponse>((ProductsFilter)filter);
             return response.Items;
         }
 
         public async Task<IList<Product>> GetPageRangeAsync(int start, int end, int pageSize = 100, IFilter filter = null)
         {
+            if (pageSize < 1 || pageSize > 500)
+            {
+                throw new ArgumentOutOfRangeException("pageSize", "Should be in range 1..500");
+            }
+
             var items = new List<Product>();
 
             for (int i = start; i <= end; i++)

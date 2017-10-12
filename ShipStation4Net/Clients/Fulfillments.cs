@@ -20,6 +20,7 @@ using ShipStation4Net.Clients.Interfaces;
 using ShipStation4Net.Domain.Entities;
 using ShipStation4Net.Filters;
 using ShipStation4Net.Responses.PaginatedResponses;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -36,8 +37,9 @@ namespace ShipStation4Net.Clients
         {
             var items = new List<Fulfillment>();
             filter = filter ?? new FulfillmentsFilter();
+
             filter.Page = 1;
-            filter.PageSize = 100;
+            filter.PageSize = 500;
 
             var pageOne = await GetDataAsync<FulfillmentsPaginatedResponse>((FulfillmentsFilter)filter);
             items.AddRange(pageOne.Items);
@@ -57,7 +59,13 @@ namespace ShipStation4Net.Clients
 
         public async Task<IList<Fulfillment>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null)
         {
+            if (pageSize < 1 || pageSize > 500)
+            {
+                throw new ArgumentOutOfRangeException("pageSize", "Should be in range 1..500");
+            }
+
             filter = filter ?? new FulfillmentsFilter();
+
             filter.Page = page;
             filter.PageSize = pageSize;
 
@@ -67,6 +75,11 @@ namespace ShipStation4Net.Clients
 
         public async Task<IList<Fulfillment>> GetPageRangeAsync(int start, int end, int pageSize = 100, IFilter filter = null)
         {
+            if (pageSize < 1 || pageSize > 500)
+            {
+                throw new ArgumentOutOfRangeException("pageSize", "Should be in range 1..500");
+            }
+
             var items = new List<Fulfillment>();
 
             for (int i = start; i <= end; i++)
