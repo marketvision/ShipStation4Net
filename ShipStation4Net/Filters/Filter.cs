@@ -41,7 +41,7 @@ namespace ShipStation4Net.Filters
 
         protected virtual Dictionary<string, object> GetFilters()
         {
-            if(PageSize.HasValue && PageSize.Value > 500)
+            if (PageSize.HasValue && PageSize.Value > 500)
             {
                 throw new ArgumentOutOfRangeException("pageSize", "Should be between 1..500");
             }
@@ -57,7 +57,7 @@ namespace ShipStation4Net.Filters
         {
             var filters = GetFilters();
 
-            request.RequestUri = new Uri(string.Format("{0}?{1}", request.RequestUri, EncodeFilterString(filters)), UriKind.Relative);
+            request.RequestUri = new Uri($"{request.RequestUri}?{EncodeFilterString(filters)}", UriKind.Relative);
 
             return request;
         }
@@ -80,9 +80,7 @@ namespace ShipStation4Net.Filters
                 filters[item.Key] = JsonConvert.SerializeObject(item.Value, ClientBase.SerializerSettings).Trim('\"');
             }
 
-            return string.Join("&",
-                    filters.Select(kvp =>
-                    string.Format("{0}={1}", kvp.Key, HttpUtility.UrlEncode(kvp.Value.ToString()))));
+            return string.Join("&", filters.Select(kvp => $"{kvp.Key}={HttpUtility.UrlEncode(kvp.Value.ToString())}"));
         }
     }
 }

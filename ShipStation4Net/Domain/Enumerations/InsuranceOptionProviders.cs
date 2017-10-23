@@ -16,10 +16,13 @@
  */
 #endregion
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
 namespace ShipStation4Net.Domain.Enumerations
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum InsuranceOptionProviders
     {
         [EnumMember(Value = "shipsurance")]
