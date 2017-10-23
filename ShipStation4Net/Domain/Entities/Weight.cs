@@ -17,18 +17,22 @@
 #endregion
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System.Runtime.Serialization;
+using ShipStation4Net.Domain.Enumerations;
 
-namespace ShipStation4Net.Domain.Enumerations
+namespace ShipStation4Net.Domain.Entities
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SortDir
+    public class Weight
     {
-        [EnumMember(Value = "ASC")]
-        Ascending = 0,
+        /// <summary>
+        /// weight value.
+        /// </summary>
+        [JsonProperty("value")]
+        public double? Value { get; set; }
 
-        [EnumMember(Value = "DESC")]
-        Descending = 1
+        /// <summary>
+        /// units of weight. Allowed units are: "pounds", "ounces", or "grams"
+        /// </summary>
+        [JsonProperty("units")]
+        public WeightUnits? Units { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace ShipStation4Net.Domain.Entities
         /// The system generated identifier for the product. This is a read-only field.
         /// </summary>
         [JsonProperty("productId")]
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
 
         /// <summary>
         /// Stock keeping Unit. A user-defined value for a product to help identify the product. It is suggested that each product should 
@@ -50,7 +50,7 @@ namespace ShipStation4Net.Domain.Entities
         /// The unit price of the product.
         /// </summary>
         [JsonProperty("price")]
-        public double Price { get; set; }
+        public double? Price { get; set; }
 
         /// <summary>
         /// The seller's cost for this product.
@@ -101,7 +101,7 @@ namespace ShipStation4Net.Domain.Entities
         /// Specifies whether or not the product is an active record.
         /// </summary>
         [JsonProperty("active")]
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
         /// <summary>
         /// The Product Category used to organize and report on similar products. See our knowledge base here for more information on 

@@ -19,7 +19,7 @@ namespace ShipStation4Net.Tests
 
             try
             {
-                warehouse = await Client.Warehouses.GetAsync(testWarehouse.WarehouseId);
+                warehouse = await Client.Warehouses.GetAsync(testWarehouse.WarehouseId.Value);
             }
             catch (ApiLimitReachedException ex)
             {
@@ -27,7 +27,7 @@ namespace ShipStation4Net.Tests
             }
             finally
             {
-                warehouse = await Client.Warehouses.GetAsync(testWarehouse.WarehouseId);
+                warehouse = await Client.Warehouses.GetAsync(testWarehouse.WarehouseId.Value);
             }
             // I have to do this so the local data goes through the same transformation the remote one does. Modify Date may cause complications.
             

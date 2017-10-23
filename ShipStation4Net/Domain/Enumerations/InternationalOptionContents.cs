@@ -16,19 +16,25 @@
  */
 #endregion
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
 namespace ShipStation4Net.Domain.Enumerations
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SortDir
+    public enum InternationalOptionContents
     {
-        [EnumMember(Value = "ASC")]
-        Ascending = 0,
+        [EnumMember(Value = "merchandise")]
+        Merchandise = 0,
 
-        [EnumMember(Value = "DESC")]
-        Descending = 1
+        [EnumMember(Value = "documents")]
+        Documents = 1,
+
+        [EnumMember(Value = "gift")]
+        Gift = 2,
+
+        [EnumMember(Value = "returned_goods")]
+        ReturnedGoods = 3,
+
+        [EnumMember(Value = "sample")]
+        Sample = 4
     }
 }

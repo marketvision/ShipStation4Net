@@ -17,18 +17,27 @@
 #endregion
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System.Runtime.Serialization;
 
-namespace ShipStation4Net.Domain.Enumerations
+namespace ShipStation4Net.Domain.Entities
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SortDir
+    public class CustomsItem
     {
-        [EnumMember(Value = "ASC")]
-        Ascending = 0,
+        [JsonProperty("customsItemId")]
+        public string CustomsItemId { get; set; }
 
-        [EnumMember(Value = "DESC")]
-        Descending = 1
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("quantity")]
+        public int? Quantity { get; set; }
+
+        [JsonProperty("value")]
+        public double? Value { get; set; }
+
+        [JsonProperty("harmonizedTariffCode")]
+        public string HarmonizedTariffCode { get; set; }
+
+        [JsonProperty("countryOfOrigin")]
+        public string CountryOfOrigin { get; set; }
     }
 }

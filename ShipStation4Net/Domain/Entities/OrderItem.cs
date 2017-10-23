@@ -27,7 +27,7 @@ namespace ShipStation4Net.Domain.Entities
         /// The system generated identifier for the OrderItem. This is a read-only field.
         /// </summary>
         [JsonProperty("orderItemId")]
-        public int OrderItemId { get; set; }
+        public int? OrderItemId { get; set; }
 
         /// <summary>
         /// An identifier for the OrderItem in the originating system.
@@ -63,13 +63,13 @@ namespace ShipStation4Net.Domain.Entities
         /// The quantity of product ordered.
         /// </summary>
         [JsonProperty("quantity")]
-        public int Quantity { get; set; }
+        public int? Quantity { get; set; }
 
         /// <summary>
         /// The sell price of a single item specified by the order source.
         /// </summary>
         [JsonProperty("unitPrice")]
-        public double UnitPrice { get; set; }
+        public double? UnitPrice { get; set; }
 
         /// <summary>
         /// The tax price of a single item specified by the order source.
@@ -108,7 +108,7 @@ namespace ShipStation4Net.Domain.Entities
         /// Indicates that the OrderItem is a non-physical adjustment to the order (e.g. a discount or promotional code)
         /// </summary>
         [JsonProperty("adjustment")]
-        public bool IsAdjustment { get; set; }
+        public bool? IsAdjustment { get; set; }
 
         /// <summary>
         /// The Universal Product Code associated with this OrderItem.

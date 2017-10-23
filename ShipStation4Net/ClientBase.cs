@@ -18,11 +18,13 @@
 
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using ShipStation4Net.Converters;
 using ShipStation4Net.Events;
 using ShipStation4Net.Exceptions;
 using ShipStation4Net.Filters;
 using ShipStation4Net.Responses;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,6 +36,8 @@ namespace ShipStation4Net
     public abstract class ClientBase
     {
         public readonly Configuration Configuration;
+
+        protected readonly JsonSerializerSettings SerializerSettings;
 
         public int ApiLimitRemaining { get; set; }
         public int LimitResetSeconds { get; set; }
@@ -52,9 +56,24 @@ namespace ShipStation4Net
 
         public ClientBase(Configuration configuration)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
             Configuration = configuration;
             LimitResetSeconds = 30;
             ApiLimitRemaining = Configuration.ApiLimit;
+
+            //'DateTime Format and Time Zone' section of ShipStation documentation - ShipStation API operates in PST/PDT
+            var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Daylight Time");
+            SerializerSettings = new JsonSerializerSettings()
+            {
+                Converters = new List<JsonConverter>()
+                {
+                    new SpecificTimeZoneDateConverter("yyyy-MM-dd HH:mm:ss", pacificTimeZone)
+                }
+            };
         }
 
         protected async Task<T> GetDataAsync<T>()
@@ -104,7 +123,7 @@ namespace ShipStation4Net
         protected async Task<TResponse> PostDataAsync<TRequest, TResponse>(string resourceEndpoint, TRequest data)
         {
             var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
-            message.Content = new StringContent(JsonConvert.SerializeObject(data), System.Text.Encoding.UTF8, "application/json");
+            message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings), System.Text.Encoding.UTF8, "application/json");
             var response = await ExecuteRequest<TResponse>(message);
             return response.Data;
         }
@@ -122,7 +141,7 @@ namespace ShipStation4Net
         protected async Task<T> PutDataAsync<T>(string resourceEndpoint, T data)
         {
             var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
-            message.Content = new StringContent(JsonConvert.SerializeObject(data));
+            message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings));
             var response = await ExecuteRequest<T>(message);
             return response.Data;
         }
@@ -191,7 +210,7 @@ namespace ShipStation4Net
 
                 var json = await httpResponse.Content.ReadAsStringAsync();
                 ApiStateLogger.LogDebug(headerString + json);
-                T responseData = JsonConvert.DeserializeObject<T>(json);
+                T responseData = JsonConvert.DeserializeObject<T>(json, SerializerSettings);
 
                 response = new RestResponse<T>
                 {

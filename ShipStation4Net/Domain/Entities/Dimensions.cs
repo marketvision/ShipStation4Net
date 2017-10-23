@@ -17,21 +17,34 @@
 #endregion
 
 using Newtonsoft.Json;
+using ShipStation4Net.Domain.Enumerations;
 
 namespace ShipStation4Net.Domain.Entities
 {
-    public class Tag
+    public class Dimensions
     {
         /// <summary>
-        /// The system generated identifier for the product tag.
+        /// Length of package.
         /// </summary>
-        [JsonProperty("tagId")]
-        public int? TagId { get; set; }
+        [JsonProperty("length")]
+        public double? Length { get; set; }
 
         /// <summary>
-        /// Name or description for the product tag.
+        /// Width of package.
         /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("width")]
+        public double? Width { get; set; }
+
+        /// <summary>
+        /// Height of package.
+        /// </summary>
+        [JsonProperty("height")]
+        public double? Height { get; set; }
+
+        /// <summary>
+        /// Units of measurement. Allowed units are: "inches", or "centimeters"
+        /// </summary>
+        [JsonProperty("units")]
+        public DimensionsUnits? Units { get; set; }
     }
 }

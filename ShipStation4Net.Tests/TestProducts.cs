@@ -20,7 +20,7 @@ namespace ShipStation4Net.Tests
 
             try
             {
-                product = await Client.Products.GetAsync(testProduct.ProductId);
+                product = await Client.Products.GetAsync(testProduct.ProductId.Value);
             }
             catch (ApiLimitReachedException ex)
             {
@@ -28,7 +28,7 @@ namespace ShipStation4Net.Tests
             }
             finally
             {
-                product = await Client.Products.GetAsync(testProduct.ProductId);
+                product = await Client.Products.GetAsync(testProduct.ProductId.Value);
             }
 
             Assert.Equal(JsonConvert.SerializeObject(testProduct), JsonConvert.SerializeObject(product));

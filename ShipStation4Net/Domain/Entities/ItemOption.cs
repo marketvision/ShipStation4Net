@@ -17,18 +17,21 @@
 #endregion
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System.Runtime.Serialization;
 
-namespace ShipStation4Net.Domain.Enumerations
+namespace ShipStation4Net.Domain.Entities
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SortDir
+    public class ItemOption
     {
-        [EnumMember(Value = "ASC")]
-        Ascending = 0,
+        /// <summary>
+        /// Name of item option. Example: "Size"
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
-        [EnumMember(Value = "DESC")]
-        Descending = 1
+        /// <summary>
+        /// The value of the item option. Example: "Medium"
+        /// </summary>
+        [JsonProperty("value")]
+        public string Value { get; set; }
     }
 }

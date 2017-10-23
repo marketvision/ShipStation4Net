@@ -16,19 +16,16 @@
  */
 #endregion
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
 
 namespace ShipStation4Net.Domain.Enumerations
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SortDir
+    public enum InternationalOptionNonDelivery
     {
-        [EnumMember(Value = "ASC")]
-        Ascending = 0,
+        [EnumMember(Value = "return_to_sender")]
+        ReturnToSender = 0,
 
-        [EnumMember(Value = "DESC")]
-        Descending = 1
+        [EnumMember(Value = "treat_as_abandoned")]
+        TreatAsAbandoned = 1
     }
 }

@@ -80,7 +80,7 @@ namespace ShipStation4Net.Tests
 
             try
             {
-                carrier = await Client.Customers.GetAsync(testCustomer.CustomerId);
+                carrier = await Client.Customers.GetAsync(testCustomer.CustomerId.Value);
             }
             catch (ApiLimitReachedException ex)
             {
@@ -88,7 +88,7 @@ namespace ShipStation4Net.Tests
             }
             finally
             {
-                carrier = await Client.Customers.GetAsync(testCustomer.CustomerId);
+                carrier = await Client.Customers.GetAsync(testCustomer.CustomerId.Value);
             }
 
             Assert.Equal(JsonConvert.SerializeObject(carrier), JsonConvert.SerializeObject(testCustomer));

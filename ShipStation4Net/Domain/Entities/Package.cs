@@ -32,10 +32,10 @@ namespace ShipStation4Net.Domain.Entities
         public string Name { get; set; }
 
         [JsonProperty("domestic")]
-        public bool IsDomestic { get; set; }
+        public bool? IsDomestic { get; set; }
 
         [JsonProperty("international")]
-        public bool IsInternational { get; set; }
+        public bool? IsInternational { get; set; }
     }
 
 }

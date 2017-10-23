@@ -17,17 +17,20 @@
 #endregion
 
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ShipStation4Net.Domain.Entities
 {
     public class Carrier
     {
+        /// <summary>
+        /// The name of the carrier
+        /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        /// <summary>
+        /// The code of the carrier
+        /// </summary>
         [JsonProperty("code")]
         public string Code { get; set; }
 
@@ -35,10 +38,10 @@ namespace ShipStation4Net.Domain.Entities
         public string AccountNumber { get; set; }
 
         [JsonProperty("requiresFundedAccount")]
-        public bool RequiresFundedAccount { get; set; }
+        public bool? RequiresFundedAccount { get; set; }
 
         [JsonProperty("balance")]
-        public double Balance { get; set; }
+        public double? Balance { get; set; }
     }
     
 }

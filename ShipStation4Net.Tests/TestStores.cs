@@ -84,7 +84,7 @@ namespace ShipStation4Net.Tests
 
             try
             {
-                refreshStatus = await Client.Stores.GetStoreRefreshStatusAsync(testStore.StoreId);
+                refreshStatus = await Client.Stores.GetStoreRefreshStatusAsync(testStore.StoreId.Value);
             }
             catch (ApiLimitReachedException ex)
             {
@@ -92,7 +92,7 @@ namespace ShipStation4Net.Tests
             }
             finally
             {
-                refreshStatus = await Client.Stores.GetStoreRefreshStatusAsync(testStore.StoreId);
+                refreshStatus = await Client.Stores.GetStoreRefreshStatusAsync(testStore.StoreId.Value);
             }
 
             Assert.Equal(testStore.StoreId, refreshStatus.StoreId);

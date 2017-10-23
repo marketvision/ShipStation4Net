@@ -42,7 +42,7 @@ namespace ShipStation4Net.Tests
 
             try
             {
-                fulfillment = await Client.Fulfillments.GetAsync(testFulfillment.FulfillmentId);
+                fulfillment = await Client.Fulfillments.GetAsync(testFulfillment.FulfillmentId.Value);
             }
             catch (ApiLimitReachedException ex)
             {
@@ -50,7 +50,7 @@ namespace ShipStation4Net.Tests
             }
             finally
             {
-                fulfillment = await Client.Fulfillments.GetAsync(testFulfillment.FulfillmentId);
+                fulfillment = await Client.Fulfillments.GetAsync(testFulfillment.FulfillmentId.Value);
             }
 
             Assert.Equal(JsonConvert.SerializeObject(testFulfillment), JsonConvert.SerializeObject(fulfillment));

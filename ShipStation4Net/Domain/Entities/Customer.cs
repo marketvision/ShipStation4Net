@@ -23,40 +23,16 @@ using System.Text;
 
 namespace ShipStation4Net.Domain.Entities
 {
-    public class MarketplaceUsername
+    public class Customer
     {
-        [JsonProperty("customerUserId")]
-        public int CustomerUserId { get; set; }
-
         [JsonProperty("customerId")]
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
 
         [JsonProperty("createDate")]
         public DateTime? CreateDate { get; set; }
 
         [JsonProperty("modifyDate")]
         public DateTime? ModifyDate { get; set; }
-
-        [JsonProperty("marketplaceId")]
-        public int MarketplaceId { get; set; }
-
-        [JsonProperty("marketplace")]
-        public string Marketplace { get; set; }
-
-        [JsonProperty("username")]
-        public string Username { get; set; }
-    }
-
-    public class Customer
-    {
-        [JsonProperty("customerId")]
-        public int CustomerId { get; set; }
-
-        [JsonProperty("createDate")]
-        public DateTime CreateDate { get; set; }
-
-        [JsonProperty("modifyDate")]
-        public DateTime ModifyDate { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }

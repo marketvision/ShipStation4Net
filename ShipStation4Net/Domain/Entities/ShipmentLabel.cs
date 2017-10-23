@@ -25,7 +25,7 @@ namespace ShipStation4Net.Domain.Entities
     public class ShipmentLabel
     {
         [JsonProperty("shipmentId")]
-        public int ShipmentId { get; set; }
+        public int? ShipmentId { get; set; }
 
         [JsonProperty("orderId")]
         public string OrderId { get; set; }
@@ -40,22 +40,22 @@ namespace ShipStation4Net.Domain.Entities
         public string OrderNumber { get; set; }
 
         [JsonProperty("createDate")]
-        public DateTime CreateDate { get; set; }
+        public DateTime? CreateDate { get; set; }
 
         [JsonProperty("shipDate")]
         public string ShipDate { get; set; }
 
         [JsonProperty("shipmentCost")]
-        public double ShipmentCost { get; set; }
+        public double? ShipmentCost { get; set; }
 
         [JsonProperty("insuranceCost")]
-        public int InsuranceCost { get; set; }
+        public int? InsuranceCost { get; set; }
 
         [JsonProperty("trackingNumber")]
         public string TrackingNumber { get; set; }
 
         [JsonProperty("isReturnLabel")]
-        public bool IsReturnLabel { get; set; }
+        public bool? IsReturnLabel { get; set; }
 
         [JsonProperty("batchNumber")]
         public string BatchNumber { get; set; }
@@ -73,16 +73,16 @@ namespace ShipStation4Net.Domain.Entities
         public string Confirmation { get; set; }
 
         [JsonProperty("warehouseId")]
-        public int WarehouseId { get; set; }
+        public int? WarehouseId { get; set; }
 
         [JsonProperty("voided")]
-        public bool Voided { get; set; }
+        public bool? Voided { get; set; }
 
         [JsonProperty("voidDate")]
-        public DateTime VoidDate { get; set; }
+        public DateTime? VoidDate { get; set; }
 
         [JsonProperty("marketplaceNotified")]
-        public bool MarketplaceNotified { get; set; }
+        public bool? MarketplaceNotified { get; set; }
 
         [JsonProperty("notifyErrorMessage")]
         public string NotifyErrorMessage { get; set; }

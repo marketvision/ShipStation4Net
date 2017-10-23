@@ -23,7 +23,7 @@ namespace ShipStation4Net.Domain.Entities
     public class Warehouse : IEntity
     {
         [JsonProperty("warehouseId")]
-        public int WarehouseId { get; set; }
+        public int? WarehouseId { get; set; }
 
         /// <summary>
         /// Name of Ship From Location.
@@ -48,7 +48,7 @@ namespace ShipStation4Net.Domain.Entities
         /// Specifies whether or not this will be your default Ship From Location.
         /// </summary>
         [JsonProperty("isDefault")]
-        public bool IsDefault { get; set; }
+        public bool? IsDefault { get; set; }
 
         [JsonProperty("sellerIntegrationId")]
         public string SellerIntegrationId { get; set; }

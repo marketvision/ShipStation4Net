@@ -20,7 +20,7 @@ namespace ShipStation4Net.Tests
 
             try
             {
-                order = await Client.Orders.GetAsync(testOrder.OrderId);
+                order = await Client.Orders.GetAsync(testOrder.OrderId.Value);
             }
             catch (ApiLimitReachedException ex)
             {
@@ -28,7 +28,7 @@ namespace ShipStation4Net.Tests
             }
             finally
             {
-                order = await Client.Orders.GetAsync(testOrder.OrderId);
+                order = await Client.Orders.GetAsync(testOrder.OrderId.Value);
             }
 
             Assert.Equal(JsonConvert.SerializeObject(testOrder), JsonConvert.SerializeObject(order));
@@ -63,7 +63,7 @@ namespace ShipStation4Net.Tests
 
             try
             {
-                orders = await Client.Orders.ListOrdersByTagAsync(tags[0].TagId, OrderStatus.Shipped) as List<Order>;
+                orders = await Client.Orders.ListOrdersByTagAsync(tags[0].TagId.Value, OrderStatus.Shipped) as List<Order>;
             }
             catch (ApiLimitReachedException ex)
             {
@@ -71,7 +71,7 @@ namespace ShipStation4Net.Tests
             }
             finally
             {
-                orders = await Client.Orders.ListOrdersByTagAsync(tags[0].TagId, OrderStatus.Shipped) as List<Order>;
+                orders = await Client.Orders.ListOrdersByTagAsync(tags[0].TagId.Value, OrderStatus.Shipped) as List<Order>;
             }
 
             Assert.True(orders.Count > 0);
