@@ -16,7 +16,7 @@
  */
 #endregion
 
-using ShipStation4Net.Domain.Enumerations;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,11 +27,6 @@ namespace ShipStation4Net.Filters
 {
     public class Filter : IFilter
     {
-        /// <summary>
-        /// Sets the direction of the sort order.
-        /// </summary>
-        public SortDir? SortDir { get; set; }
-
         /// <summary>
         /// Page number.
         /// Default: 1.
@@ -44,34 +39,50 @@ namespace ShipStation4Net.Filters
         /// </summary>
         public int? PageSize { get; set; }
 
-        public virtual HttpRequestMessage AddFilter(HttpRequestMessage request)
+        protected virtual Dictionary<string, object> GetFilters()
         {
-            var filters = new Dictionary<string, string>();
-            
-            if (PageSize != null)
+            if(PageSize.HasValue && PageSize.Value > 500)
             {
-                PageSize = (PageSize < 500) ? PageSize : 500;
-                filters.Add("pageSize", PageSize.Value.ToString());
-            }
-            if (Page != null)
-            {
-                filters.Add("page", Page.Value.ToString());
-            }
-            if (SortDir != null)
-            {
-                filters.Add("sortDir", SortDir.Value.ToString());
+                throw new ArgumentOutOfRangeException("pageSize", "Should be between 1..500");
             }
 
-            request.RequestUri = new Uri(string.Format("{0}?{1}", request.RequestUri, EncodeFilterString(filters)));
+            return new Dictionary<string, object>()
+            {
+                {"page", Page},
+                {"pageSize", PageSize}
+            };
+        }
+
+        public virtual HttpRequestMessage AddFilter(HttpRequestMessage request)
+        {
+            var filters = GetFilters();
+
+            request.RequestUri = new Uri(string.Format("{0}?{1}", request.RequestUri, EncodeFilterString(filters)), UriKind.Relative);
 
             return request;
         }
 
-        public string EncodeFilterString(IDictionary<string, string> filters)
+        public string EncodeFilterString(IDictionary<string, object> filters)
         {
+            foreach (var item in filters.ToList())
+            {
+                if (item.Value == null)
+                {
+                    filters.Remove(item.Key);
+                    continue;
+                }
+
+                if (item.Value.GetType() == typeof(string))
+                {
+                    continue;
+                }
+
+                filters[item.Key] = JsonConvert.SerializeObject(item.Value, ClientBase.SerializerSettings).Trim('\"');
+            }
+
             return string.Join("&",
                     filters.Select(kvp =>
-                    string.Format("{0}={1}", kvp.Key, HttpUtility.UrlEncode(kvp.Value))));
+                    string.Format("{0}={1}", kvp.Key, HttpUtility.UrlEncode(kvp.Value.ToString()))));
         }
     }
 }

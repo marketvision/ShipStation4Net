@@ -16,21 +16,26 @@
  */
 #endregion
 
-using Newtonsoft.Json;
 using ShipStation4Net.Domain.Enumerations;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 
 namespace ShipStation4Net.Filters
 {
     public class OrdersFilter : Filter
     {
         /// <summary>
-        /// Sort the responses by a set value.The response will be sorted based off the ascending dates(oldest to most current.) If left empty, the response will be sorted by ascending orderId.
-        /// Example: OrderDate
+        /// Returns orders that atch the specified name. 
+        /// Example: Smith.
         /// </summary>
-        public OrdersSortBy? SortBy { get; set; }
+        public string CustomerName { get; set; }
+
+        /// <summary>
+        /// Returns orders that contain items that match the specified keyword.
+        /// Fields searched are Sku, Description, and Options
+        /// Example: ABC123.
+        /// </summary>
+        public string ItemKeyword { get; set; }
 
         /// <summary>
         /// Returns orders that were created in ShipStation after the specified date
@@ -57,9 +62,22 @@ namespace ShipStation4Net.Filters
         public DateTime? ModifyDateEnd { get; set; }
 
         /// <summary>
-        /// ID of the tag. Call Accounts/ListTags to obtain a list of tags for this account.
+        /// Returns orders greater than the specified date
+        /// Example: 2015-01-01 00:00:00.
         /// </summary>
-        public int? TagId { get; set; }
+        public DateTime? OrderDateStart { get; set; }
+
+        /// <summary>
+        /// Returns orders less than or equal to the specified date
+        /// Example: 2015-01-08 00:00:00.
+        /// </summary>
+        public DateTime? OrderDateEnd { get; set; }
+
+        /// <summary>
+        /// Filter by order number, performs a "starts with" search.
+        /// Example: 12345.
+        /// </summary>
+        public string OrderNumber { get; set; }
 
         /// <summary>
         /// The order's status.
@@ -68,52 +86,55 @@ namespace ShipStation4Net.Filters
         /// </summary>
         public OrderStatus? OrderStatus { get; set; }
 
-        public override HttpRequestMessage AddFilter(HttpRequestMessage request)
+        /// <summary>
+        /// Returns orders that were paid after the specified date 
+        /// Example: 2015-01-01.
+        /// </summary>
+        public DateTime? PaymentDateStart { get; set; }
+
+        /// <summary>
+        /// Returns orders that were paid before the specified date 
+        /// Example: 2015-01-08.
+        /// </summary>
+        public DateTime? PaymentDateEnd { get; set; }
+
+        /// <summary>
+        /// Filters orders to a single store. Call List Stores to obtain a list of store Ids. Example: 123456.
+        /// </summary>
+        public int? StoreId { get; set; }
+
+        /// <summary>
+        /// Sort the responses by a set value.The response will be sorted based off the ascending dates(oldest to most current.) If left empty, the response will be sorted by ascending orderId.
+        /// Example: OrderDate
+        /// </summary>
+        public OrdersSortBy? SortBy { get; set; }
+
+        /// <summary>
+        /// Sets the direction of the sort order.
+        /// </summary>
+        public SortDir? SortDir { get; set; }
+
+        protected override Dictionary<string, object> GetFilters()
         {
-            var filters = new Dictionary<string, string>();
+            var res = base.GetFilters();
 
-            if (CreateDateStart != null)
-            {
-                filters.Add("createDateStart", CreateDateStart.Value.ToString());
-            }
-            if (CreateDateEnd != null)
-            {
-                filters.Add("createDateEnd", CreateDateEnd.Value.ToString());
-            }
-            if (ModifyDateStart != null)
-            {
-                filters.Add("modifyDateStart", ModifyDateStart.Value.ToString());
-            }
-            if (ModifyDateEnd != null)
-            {
-                filters.Add("modifyDateEnd", ModifyDateEnd.Value.ToString());
-            }
-            if (TagId != null)
-            {
-                filters.Add("tagId", TagId.Value.ToString());
-            }
-            if (OrderStatus != null)
-            {
-                filters.Add("orderStatus", JsonConvert.SerializeObject(OrderStatus).Trim('\"'));
-            }
+            res["customerName"] = CustomerName;
+            res["itemKeyword"] = ItemKeyword;
+            res["createDateStart"] = CreateDateStart;
+            res["createDateEnd"] = CreateDateEnd;
+            res["modifyDateStart"] = ModifyDateStart;
+            res["modifyDateEnd"] = ModifyDateEnd;
+            res["orderDateStart"] = OrderDateStart;
+            res["orderDateEnd"] = OrderDateEnd;
+            res["orderNumber"] = OrderNumber;
+            res["orderStatus"] = OrderStatus;
+            res["paymentDateStart"] = PaymentDateStart;
+            res["paymentDateEnd"] = PaymentDateEnd;
+            res["storeId"] = StoreId;
+            res["sortBy"] = SortBy;
+            res["sortDir"] = SortDir;
 
-            if (PageSize != null)
-            {
-                filters.Add("pageSize", PageSize.Value.ToString());
-            }
-            if (Page != null)
-            {
-                filters.Add("page", Page.Value.ToString());
-            }
-
-            if (SortBy != null)
-            {
-                filters.Add("sortBy", SortBy.Value.ToString());
-            }
-            
-            request.RequestUri = new Uri(string.Format("{0}?{1}", request.RequestUri, EncodeFilterString(filters)), UriKind.Relative);
-
-            return request;
+            return res;
         }
     }
 }

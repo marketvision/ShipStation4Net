@@ -16,6 +16,7 @@
  */
 #endregion
 
+using Newtonsoft.Json;
 using ShipStation4Net.Domain.Enumerations;
 using System;
 using System.Collections.Generic;
@@ -82,66 +83,30 @@ namespace ShipStation4Net.Filters
         /// ShipDate, CreateDate.
         /// </summary>
         public FulfillmentsSortBy? SortBy { get; set; }
-        
-        public override HttpRequestMessage AddFilter(HttpRequestMessage request)
+
+        /// <summary>
+        /// Sets the direction of the sort order.
+        /// </summary>
+        public SortDir? SortDir { get; set; }
+
+
+        protected override Dictionary<string, object> GetFilters()
         {
-            var filters = new Dictionary<string, string>();
+            var res = base.GetFilters();
 
-            if (FulfillmentId != null)
-            {
-                filters.Add("fulfillmentId", FulfillmentId.Value.ToString());
-            }
-            if (OrderId != null)
-            {
-                filters.Add("orderId", OrderId.Value.ToString());
-            }
-            if (OrderNumber != null)
-            {
-                filters.Add("orderNumber", OrderNumber);
-            }
-            if (TrackingNumber != null)
-            {
-                filters.Add("trackingNumber", TrackingNumber);
-            }
-            if (RecipientName != null)
-            {
-                filters.Add("recipientName", RecipientName);
-            }
+            res["fulfillmentId"] = FulfillmentId;
+            res["orderId"] = OrderId;
+            res["orderNumber"] = OrderNumber;
+            res["trackingNumber"] = TrackingNumber;
+            res["recipientName"] = RecipientName;
+            res["createDateStart"] = CreateDateStart;
+            res["createDateEnd"] = CreateDateEnd;
+            res["shipDateStart"] = ShipDateStart;
+            res["shipDateEnd"] = ShipDateEnd;
+            res["sortBy"] = SortBy;
+            res["sortDir"] = SortDir;
 
-            if (CreateDateStart != null)
-            {
-                filters.Add("createDateStart", CreateDateStart.Value.ToString());
-            }
-            if (CreateDateEnd != null)
-            {
-                filters.Add("createDateEnd", CreateDateEnd.Value.ToString());
-            }
-            if (ShipDateStart != null)
-            {
-                filters.Add("shipDateStart", ShipDateStart.Value.ToString());
-            }
-            if (ShipDateEnd != null)
-            {
-                filters.Add("shipDateEnd", ShipDateEnd.Value.ToString());
-            }
-
-            if (PageSize != null)
-            {
-                filters.Add("pageSize", PageSize.Value.ToString());
-            }
-            if (Page != null)
-            {
-                filters.Add("page", Page.Value.ToString());
-            }
-
-            if (SortBy != null)
-            {
-                filters.Add("sortBy", SortBy.ToString());
-            }
-
-            request.RequestUri = new Uri(string.Format("{0}?{1}", request.RequestUri, EncodeFilterString(filters)), UriKind.Relative);
-
-            return request;
+            return res;
         }
     }
 }

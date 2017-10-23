@@ -17,9 +17,7 @@
 #endregion
 
 using ShipStation4Net.Domain.Enumerations;
-using System;
 using System.Collections.Generic;
-using System.Net.Http;
 
 namespace ShipStation4Net.Filters
 {
@@ -51,48 +49,24 @@ namespace ShipStation4Net.Filters
         /// Name , ModifyDate , CreateDate.
         /// </summary>
         public CustomersSortBy? SortBy { get; set; }
-        
-        public override HttpRequestMessage AddFilter(HttpRequestMessage request)
+
+        /// <summary>
+        /// Sets the direction of the sort order.
+        /// </summary>
+        public SortDir? SortDir { get; set; }
+
+        protected override Dictionary<string, object> GetFilters()
         {
-            var filters = new Dictionary<string, string>();
+            var res = base.GetFilters();
 
-            if (StateCode != null)
-            {
-                filters.Add("stateCode", StateCode);
-            }
+            res["stateCode"] = StateCode;
+            res["countryCode"] = CountryCode;
+            res["marketplaceId"] = MarketplaceId;
+            res["tagId"] = TagId;
+            res["sortBy"] = SortBy;
+            res["sortDir"] = SortDir;
 
-            if (CountryCode != null)
-            {
-                filters.Add("countryCode", CountryCode);
-            }
-
-            if (MarketplaceId != null)
-            {
-                filters.Add("marketplaceId", MarketplaceId.Value.ToString());
-            }
-
-            if (TagId != null)
-            {
-                filters.Add("tagId", TagId.Value.ToString());
-            }
-
-            if (PageSize != null)
-            {
-                PageSize = (PageSize < 500) ? PageSize : 500;
-                filters.Add("pageSize", PageSize.Value.ToString());
-            }
-            if (Page != null)
-            {
-                filters.Add("page", Page.Value.ToString());
-            }
-            if (SortDir != null)
-            {
-                filters.Add("sortDir", SortDir.Value.ToString());
-            }
-
-            request.RequestUri = new Uri(string.Format("{0}?{1}", request.RequestUri, EncodeFilterString(filters)), UriKind.Relative);
-
-            return request;
+            return res;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace ShipStation4Net
     {
         public readonly Configuration Configuration;
 
-        protected readonly JsonSerializerSettings SerializerSettings;
+        public static readonly JsonSerializerSettings SerializerSettings;
 
         public int ApiLimitRemaining { get; set; }
         public int LimitResetSeconds { get; set; }
@@ -57,6 +57,21 @@ namespace ShipStation4Net
 
         protected string BaseUri { get; set; }
 
+        static ClientBase()
+        {
+            //'DateTime Format and Time Zone' section of ShipStation documentation - ShipStation API operates in PST/PDT
+            TimeZoneInfo PacificTimezone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+
+            SerializerSettings = new JsonSerializerSettings()
+            {
+                Converters = new List<JsonConverter>()
+                {
+                    new SpecificTimeZoneDateConverter("yyyy-MM-dd HH:mm:ss", PacificTimezone)
+                },
+                NullValueHandling = NullValueHandling.Ignore
+            };
+        }
+
         public ClientBase(Configuration configuration)
         {
             if (configuration == null)
@@ -70,15 +85,6 @@ namespace ShipStation4Net
             LimitResetSeconds = 30;
             ApiLimitRemaining = Configuration.ApiLimit;
 
-            //'DateTime Format and Time Zone' section of ShipStation documentation - ShipStation API operates in PST/PDT
-            var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
-            SerializerSettings = new JsonSerializerSettings()
-            {
-                Converters = new List<JsonConverter>()
-                {
-                    new SpecificTimeZoneDateConverter("yyyy-MM-dd HH:mm:ss", pacificTimeZone)
-                }
-            };
         }
 
         protected async Task<T> GetDataAsync<T>()
@@ -139,7 +145,8 @@ namespace ShipStation4Net
             var response = await RetryPolicy.ExecuteAction(async () =>
             {
                 var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
-                message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings), System.Text.Encoding.UTF8, "application/json");
+                var body = JsonConvert.SerializeObject(data, SerializerSettings);
+                message.Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
                 return await ExecuteRequest<TResponse>(message);
             });
 

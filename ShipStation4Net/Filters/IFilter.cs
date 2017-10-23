@@ -23,8 +23,6 @@ namespace ShipStation4Net.Filters
 {
     public interface IFilter
     {
-        SortDir? SortDir { get; set; }
-
         int? Page { get; set; }
 
         int? PageSize { get; set; }

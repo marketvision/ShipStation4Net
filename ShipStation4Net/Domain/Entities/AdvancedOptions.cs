@@ -27,7 +27,7 @@ namespace ShipStation4Net.Domain.Entities
         /// Specifies the warehouse where to the order is to ship from. If the order was fulfilled using a fill provider, no warehouse is attached to these orders and will result in a null value being returned. *Please see note below
         /// </summary>
         [JsonProperty("warehouseId")]
-        public int? warehouseId { get; set; }
+        public int? WarehouseId { get; set; }
 
         /// <summary>
         /// Specifies whether the order is non-machinable.
