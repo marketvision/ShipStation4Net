@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using ShipStation4Net.Converters;
 using ShipStation4Net.Events;
 using ShipStation4Net.Exceptions;
+using ShipStation4Net.FaultHandling;
 using ShipStation4Net.Filters;
 using ShipStation4Net.Responses;
 using System;
@@ -52,6 +53,8 @@ namespace ShipStation4Net
 
         public event EventHandler<ShipStationResponseEventArgs> RequestCompleted;
 
+        public RetryPolicy RetryPolicy = RetryPolicy.RetryOnApiLimit;
+
         protected string BaseUri { get; set; }
 
         public ClientBase(Configuration configuration)
@@ -79,7 +82,7 @@ namespace ShipStation4Net
         protected async Task<T> GetDataAsync<T>()
         {
             var message = new HttpRequestMessage(HttpMethod.Get, BaseUri);
-            var response = await ExecuteRequest<T>(message);
+            var response = await ExecuteRequestSafe<T>(message);
             return response.Data;
         }
 
@@ -106,7 +109,7 @@ namespace ShipStation4Net
 
             var uri = message.RequestUri.ToString();
 
-            var response = await ExecuteRequest<T>(message);
+            var response = await ExecuteRequestSafe<T>(message);
             return response.Data;
         }
 
@@ -124,7 +127,7 @@ namespace ShipStation4Net
         {
             var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
             message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings), System.Text.Encoding.UTF8, "application/json");
-            var response = await ExecuteRequest<TResponse>(message);
+            var response = await ExecuteRequestSafe<TResponse>(message);
             return response.Data;
         }
 
@@ -142,7 +145,7 @@ namespace ShipStation4Net
         {
             var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
             message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings));
-            var response = await ExecuteRequest<T>(message);
+            var response = await ExecuteRequestSafe<T>(message);
             return response.Data;
         }
 
@@ -150,8 +153,13 @@ namespace ShipStation4Net
         {
             var message = new HttpRequestMessage(HttpMethod.Delete, resourceEndpoint);
 
-            var response = await ExecuteRequest<SuccessResponse>(message);
+            var response = await ExecuteRequestSafe<SuccessResponse>(message);
             return response.Data.Success;
+        }
+
+        private async Task<IRestResponse<T>> ExecuteRequestSafe<T>(HttpRequestMessage message)
+        {
+            return await RetryPolicy.ExecuteAction<IRestResponse<T>>(async () => await ExecuteRequest<T>(message));
         }
 
         private async Task<IRestResponse<T>> ExecuteRequest<T>(HttpRequestMessage message)
