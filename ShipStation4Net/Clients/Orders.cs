@@ -127,7 +127,7 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="id">The id of the order to delete.</param>
         /// <returns>A boolean representing whether or not the delete was successful.</returns>
-        public async Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(int id)
         {
             return await DeleteDataAsync(id);
         }

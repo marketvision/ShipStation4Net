@@ -175,6 +175,11 @@ namespace ShipStation4Net
             return response.Data;
         }
 
+        protected async Task<bool> DeleteDataAsync(int id)
+        {
+            return await DeleteDataAsync(string.Format("{0}/{1}", BaseUri, id));
+        }
+
         protected async Task<bool> DeleteDataAsync(string resourceEndpoint)
         {
             var response = await RetryPolicy.ExecuteAction(async () =>
