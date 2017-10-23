@@ -1,10 +1,8 @@
 ﻿using ShipStation4Net.Domain.Entities;
 using ShipStation4Net.Domain.Enumerations;
-using ShipStation4Net.Exceptions;
 using ShipStation4Net.Filters;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace ShipStation4Net.Tests
@@ -14,20 +12,7 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetPageOneShipmentsAsync()
         {
-            var shipments = new List<Shipment>();
-
-            try
-            {
-                shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
-            }
-            catch (ApiLimitReachedException ex)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(ex.RemainingSecondsBeforeReset));
-            }
-            finally
-            {
-                shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
-            }
+            var shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
 
             Assert.True(shipments.Count > 0);
         }
@@ -35,26 +20,14 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestShipmentFilterCreateDate()
         {
-            var shipments = new List<Shipment>();
             var shipmentFilter = new ShipmentsFilter
             {
                 CreateDateStart = DateTime.Now.Subtract(TimeSpan.FromDays(30)),
-                SortBy =  ShipmentsSortBy.CreateDate,
+                SortBy = ShipmentsSortBy.CreateDate,
                 SortDir = SortDir.Ascending
             };
 
-            try
-            {
-                shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
-            }
-            catch (ApiLimitReachedException ex)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(ex.RemainingSecondsBeforeReset));
-            }
-            finally
-            {
-                shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
-            }
+            var shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
 
             Assert.True(shipments.Count > 0);
         }
@@ -62,7 +35,6 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestShipmentFilterCarrierCode()
         {
-            var shipments = new List<Shipment>();
             var shipmentFilter = new ShipmentsFilter
             {
                 CarrierCode = "ups",
@@ -70,18 +42,7 @@ namespace ShipStation4Net.Tests
                 SortDir = SortDir.Descending
             };
 
-            try
-            {
-                shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
-            }
-            catch (ApiLimitReachedException ex)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(ex.RemainingSecondsBeforeReset));
-            }
-            finally
-            {
-                shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
-            }
+            var shipments = await Client.Shipments.GetPageAsync(1) as List<Shipment>;
 
             Assert.True(shipments.Count > 0);
         }
@@ -89,8 +50,6 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetRatesAsync()
         {
-            var rates = new List<Rate>();
-
             // This is the example from the API docs
             var ratesRequest = new RatesRequest
             {
@@ -100,7 +59,8 @@ namespace ShipStation4Net.Tests
                 ToCountry = "US",
                 ToPostalCode = "20500",
                 ToCity = "Washington",
-                Weight = new Weight {
+                Weight = new Weight
+                {
                     Value = 3,
                     Units = WeightUnits.Ounces
                 },
@@ -115,18 +75,7 @@ namespace ShipStation4Net.Tests
                 IsResidential = false
             };
 
-            try
-            {
-                rates = await Client.Shipments.GetRatesAsync(ratesRequest) as List<Rate>;
-            }
-            catch (ApiLimitReachedException ex)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(ex.RemainingSecondsBeforeReset));
-            }
-            finally
-            {
-                rates = await Client.Shipments.GetRatesAsync(ratesRequest) as List<Rate>;
-            }
+            var rates = await Client.Shipments.GetRatesAsync(ratesRequest) as List<Rate>;
 
             Assert.True(rates.Count > 0);
         }

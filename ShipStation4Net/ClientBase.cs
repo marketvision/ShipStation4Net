@@ -64,12 +64,14 @@ namespace ShipStation4Net
                 throw new ArgumentNullException(nameof(configuration));
             }
 
+            configuration.AreConfigurationSet();
+
             Configuration = configuration;
             LimitResetSeconds = 30;
             ApiLimitRemaining = Configuration.ApiLimit;
 
             //'DateTime Format and Time Zone' section of ShipStation documentation - ShipStation API operates in PST/PDT
-            var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Daylight Time");
+            var pacificTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
             SerializerSettings = new JsonSerializerSettings()
             {
                 Converters = new List<JsonConverter>()
@@ -81,8 +83,12 @@ namespace ShipStation4Net
 
         protected async Task<T> GetDataAsync<T>()
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, BaseUri);
-            var response = await ExecuteRequestSafe<T>(message);
+            var response = await RetryPolicy.ExecuteAction(async () =>
+            {
+                var message = new HttpRequestMessage(HttpMethod.Get, BaseUri);
+                return await ExecuteRequest<T>(message);
+            });
+
             return response.Data;
         }
 
@@ -100,16 +106,21 @@ namespace ShipStation4Net
                 endpoint = string.Format("{0}{1}", BaseUri, resourceEndpoint);
             }
 
-            var message = new HttpRequestMessage(HttpMethod.Get, endpoint);
-
-            if (filter != null && !resourceEndpoint.Contains("?"))
+            var response = await RetryPolicy.ExecuteAction(async () =>
             {
-                filter.AddFilter(message);
-            }
+                var message = new HttpRequestMessage(HttpMethod.Get, endpoint);
 
-            var uri = message.RequestUri.ToString();
+                if (filter != null && !resourceEndpoint.Contains("?"))
+                {
+                    filter.AddFilter(message);
+                }
 
-            var response = await ExecuteRequestSafe<T>(message);
+                var uri = message.RequestUri.ToString();
+
+                var resp = await ExecuteRequest<T>(message);
+                return resp;
+            });
+
             return response.Data;
         }
 
@@ -125,9 +136,13 @@ namespace ShipStation4Net
 
         protected async Task<TResponse> PostDataAsync<TRequest, TResponse>(string resourceEndpoint, TRequest data)
         {
-            var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
-            message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings), System.Text.Encoding.UTF8, "application/json");
-            var response = await ExecuteRequestSafe<TResponse>(message);
+            var response = await RetryPolicy.ExecuteAction(async () =>
+            {
+                var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
+                message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings), System.Text.Encoding.UTF8, "application/json");
+                return await ExecuteRequest<TResponse>(message);
+            });
+
             return response.Data;
         }
 
@@ -143,23 +158,25 @@ namespace ShipStation4Net
 
         protected async Task<T> PutDataAsync<T>(string resourceEndpoint, T data)
         {
-            var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
-            message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings));
-            var response = await ExecuteRequestSafe<T>(message);
+            var response = await RetryPolicy.ExecuteAction(async () =>
+            {
+                var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
+                message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings));
+                return await ExecuteRequest<T>(message);
+            });
+
             return response.Data;
         }
 
         protected async Task<bool> DeleteDataAsync(string resourceEndpoint)
         {
-            var message = new HttpRequestMessage(HttpMethod.Delete, resourceEndpoint);
+            var response = await RetryPolicy.ExecuteAction(async () =>
+            {
+                var message = new HttpRequestMessage(HttpMethod.Delete, resourceEndpoint);
+                return await ExecuteRequest<SuccessResponse>(message);
+            });
 
-            var response = await ExecuteRequestSafe<SuccessResponse>(message);
             return response.Data.Success;
-        }
-
-        private async Task<IRestResponse<T>> ExecuteRequestSafe<T>(HttpRequestMessage message)
-        {
-            return await RetryPolicy.ExecuteAction<IRestResponse<T>>(async () => await ExecuteRequest<T>(message));
         }
 
         private async Task<IRestResponse<T>> ExecuteRequest<T>(HttpRequestMessage message)

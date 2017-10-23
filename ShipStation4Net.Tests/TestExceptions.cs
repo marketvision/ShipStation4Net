@@ -1,7 +1,5 @@
 ﻿using ShipStation4Net.Clients;
 using ShipStation4Net.Exceptions;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace ShipStation4Net.Tests
@@ -18,18 +16,8 @@ namespace ShipStation4Net.Tests
                     UserName = "incorrect",
                     UserApiKey = "incorrect"
                 });
-                try
-                {
-                    await client.Orders.GetAsync(1);
-                }
-                catch (ApiLimitReachedException ex)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(ex.RemainingSecondsBeforeReset));
-                }
-                finally
-                {
-                    await client.Orders.GetAsync(1);
-                }
+
+                await client.Orders.GetAsync(1);
             });
         }
 
@@ -38,18 +26,7 @@ namespace ShipStation4Net.Tests
         {
             await Assert.ThrowsAsync<NotFoundException>(async () =>
             {
-                try
-                {
-                    await Client.Orders.GetAsync(1);
-                }
-                catch (ApiLimitReachedException ex)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(ex.RemainingSecondsBeforeReset));
-                }
-                finally
-                {
-                    await Client.Orders.GetAsync(1);
-                }
+                await Client.Orders.GetAsync(1);
             });
         }
     }
