@@ -16,12 +16,9 @@
  */
 #endregion
 
-using Newtonsoft.Json;
 using ShipStation4Net.Domain.Enumerations;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 
 namespace ShipStation4Net.Filters
 {
@@ -63,12 +60,6 @@ namespace ShipStation4Net.Filters
         public string TrackingNumber { get; set; }
 
         /// <summary>
-        /// Sort the responses by a set value.The response will be sorted based off the ascending dates(oldest to most current.) If left empty, the response will be sorted by ascending createDate.
-        /// Example: ShipDate.
-        /// </summary>
-        public ShipmentsSortBy? SortBy { get; set; }
-
-        /// <summary>
         /// Returns shipments created on or after the specified createDate
         /// Example: 2015-01-01 00:00:00. 
         /// </summary>
@@ -79,18 +70,6 @@ namespace ShipStation4Net.Filters
         /// Example: 2015-01-08 00:00:00. 
         /// </summary>
         public DateTime CreateDateEnd { get; set; }
-
-        /// <summary>
-        /// Returns shipments voided on or after the specified date
-        /// Example: 2015-01-01 00:00:00. 
-        /// </summary>
-        public DateTime VoidDateStart { get; set; }
-
-        /// <summary>
-        /// Returns shipments voided on or before the specified date
-        /// Example: 2015-01-08 00:00:00. 
-        /// </summary>
-        public DateTime VoidDateEnd { get; set; }
 
         /// <summary>
         /// Returns shipments with the shipDate on or after the specified date
@@ -105,81 +84,56 @@ namespace ShipStation4Net.Filters
         public DateTime ShipDateEnd { get; set; }
 
         /// <summary>
+        /// Returns shipments voided on or after the specified date
+        /// Example: 2015-01-01 00:00:00. 
+        /// </summary>
+        public DateTime VoidDateStart { get; set; }
+
+        /// <summary>
+        /// Returns shipments voided on or before the specified date
+        /// Example: 2015-01-08 00:00:00. 
+        /// </summary>
+        public DateTime VoidDateEnd { get; set; }
+
+        /// <summary>
         /// Specifies whether to include shipment items with results Default value: false.
         /// Example: false. 
         /// </summary>
         public bool? IncludeShipmentItems { get; set; }
-        
-        public override HttpRequestMessage AddFilter(HttpRequestMessage request)
+
+        /// <summary>
+        /// Sort the responses by a set value.The response will be sorted based off the ascending dates(oldest to most current.) If left empty, the response will be sorted by ascending createDate.
+        /// Example: ShipDate.
+        /// </summary>
+        public ShipmentsSortBy? SortBy { get; set; }
+
+        /// <summary>
+        /// Sets the direction of the sort order.
+        /// </summary>
+        public SortDir? SortDir { get; set; }
+
+        protected override Dictionary<string, object> GetFilters()
         {
-            var filters = new Dictionary<string, string>();
+            var res = base.GetFilters();
 
-            if (RecipientsName != null)
-            {
-                filters.Add("recipientsName", RecipientsName);
-            }
-            if (RecipientsCountryCode != null)
-            {
-                filters.Add("recipientsCountryCode", RecipientsCountryCode);
-            }
-            if (OrderNumber != null)
-            {
-                filters.Add("orderNumber", OrderNumber);
-            }
-            if (OrderId != null)
-            {
-                filters.Add("orderId", OrderId.Value.ToString());
-            }
-            if (CarrierCode != null)
-            {
-                filters.Add("carrierCode", CarrierCode);
-            }
-            if (ServiceCode != null)
-            {
-                filters.Add("serviceCode", ServiceCode);
-            }
-            if (TrackingNumber != null)
-            {
-                filters.Add("trackingNumber", TrackingNumber);
-            }
-            if (CreateDateStart != null)
-            {
-                filters.Add("createDateStart", CreateDateStart.ToString());
-            }
-            if (CreateDateEnd != null)
-            {
-                filters.Add("createDateEnd", CreateDateEnd.ToString());
-            }
-            if (VoidDateStart != null)
-            {
-                filters.Add("voidDateStart", VoidDateStart.ToString());
-            }
-            if (VoidDateEnd != null)
-            {
-                filters.Add("voidDateEnd", VoidDateEnd.ToString());
-            }
-            if (IncludeShipmentItems != null)
-            {
-                filters.Add("includeShipmentItems", IncludeShipmentItems.Value.ToString());
-            }
+            res["recipientsName"] = RecipientsName;
+            res["recipientsCountryCode"] = RecipientsCountryCode;
+            res["orderNumber"] = OrderNumber;
+            res["orderId"] = OrderId;
+            res["carrierCode"] = CarrierCode;
+            res["serviceCode"] = ServiceCode;
+            res["trackingNumber"] = TrackingNumber;
+            res["createDateStart"] = CreateDateStart;
+            res["createDateEnd"] = CreateDateEnd;
+            res["shipDateStart"] = ShipDateStart;
+            res["shipDateEnd"] = ShipDateEnd;
+            res["voidDateStart"] = VoidDateStart;
+            res["voidDateEnd"] = VoidDateEnd;
+            res["includeShipmentItems"] = IncludeShipmentItems;
+            res["sortBy"] = SortBy;
+            res["sortDir"] = SortDir;
 
-            if (PageSize != null)
-            {
-                filters.Add("pageSize", PageSize.Value.ToString());
-            }
-            if (Page != null)
-            {
-                filters.Add("page", Page.Value.ToString());
-            }
-
-            if (SortBy != null)
-            {
-                filters.Add("sortBy", JsonConvert.SerializeObject(SortBy).Trim('\"'));
-            }
-
-            request.RequestUri = new Uri(string.Format("{0}?{1}", request.RequestUri, EncodeFilterString(filters)), UriKind.Relative);
-
-            return request;
+            return res;
         }
     }
 }

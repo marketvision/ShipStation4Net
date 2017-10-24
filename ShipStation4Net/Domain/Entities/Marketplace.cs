@@ -17,9 +17,6 @@
 #endregion
 
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ShipStation4Net.Domain.Entities
 {
@@ -43,5 +40,4 @@ namespace ShipStation4Net.Domain.Entities
         [JsonProperty("canConfirmShipments")]
         public bool CanConfirmShipments { get; set; }
     }
-
 }

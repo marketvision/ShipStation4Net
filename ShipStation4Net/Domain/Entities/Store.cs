@@ -22,25 +22,16 @@ using System.Collections.Generic;
 
 namespace ShipStation4Net.Domain.Entities
 {
-    public class StatusMapping
-    {
-        [JsonProperty("orderStatus")]
-        public string OrderStatus { get; set; }
-
-        [JsonProperty("statusKey")]
-        public string StatusKey { get; set; }
-    }
-
     public class Store
     {
         [JsonProperty("storeId")]
-        public int StoreId { get; set; }
+        public int? StoreId { get; set; }
 
         [JsonProperty("storeName")]
         public string StoreName { get; set; }
 
         [JsonProperty("marketplaceId")]
-        public int MarketplaceId { get; set; }
+        public int? MarketplaceId { get; set; }
 
         [JsonProperty("marketplaceName")]
         public string MarketplaceName { get; set; }
@@ -55,7 +46,7 @@ namespace ShipStation4Net.Domain.Entities
         public string IntegrationUrl { get; set; }
 
         [JsonProperty("active")]
-        public bool Active { get; set; }
+        public bool? Active { get; set; }
 
         [JsonProperty("companyName")]
         public string CompanyName { get; set; }
@@ -76,13 +67,13 @@ namespace ShipStation4Net.Domain.Entities
         public DateTime? LastRefreshAttempt { get; set; }
 
         [JsonProperty("createDate")]
-        public DateTime CreateDate { get; set; }
+        public DateTime? CreateDate { get; set; }
 
         [JsonProperty("modifyDate")]
-        public DateTime ModifyDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
 
         [JsonProperty("autoRefresh")]
-        public bool AutoRefresh { get; set; }
+        public bool? AutoRefresh { get; set; }
 
         [JsonProperty("statusMappings")]
         public IList<StatusMapping> StatusMappings { get; set; }

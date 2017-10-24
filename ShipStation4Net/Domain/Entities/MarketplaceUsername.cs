@@ -17,22 +17,31 @@
 #endregion
 
 using Newtonsoft.Json;
+using System;
 
 namespace ShipStation4Net.Domain.Entities
 {
-    public class Rate
+    public class MarketplaceUsername
     {
-        [JsonProperty("serviceName")]
-        public string ServiceName { get; set; }
+        [JsonProperty("customerUserId")]
+        public int CustomerUserId { get; set; }
 
-        [JsonProperty("serviceCode")]
-        public string ServiceCode { get; set; }
+        [JsonProperty("customerId")]
+        public int CustomerId { get; set; }
 
-        [JsonProperty("shipmentCost")]
-        public double? ShipmentCost { get; set; }
+        [JsonProperty("createDate")]
+        public DateTime? CreateDate { get; set; }
 
-        [JsonProperty("otherCost")]
-        public double? OtherCost { get; set; }
+        [JsonProperty("modifyDate")]
+        public DateTime? ModifyDate { get; set; }
+
+        [JsonProperty("marketplaceId")]
+        public int MarketplaceId { get; set; }
+
+        [JsonProperty("marketplace")]
+        public string Marketplace { get; set; }
+
+        [JsonProperty("username")]
+        public string Username { get; set; }
     }
-    
 }

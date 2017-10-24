@@ -26,7 +26,7 @@ namespace ShipStation4Net.Domain.Entities
         /// The system generated identifier for the product category.
         /// </summary>
         [JsonProperty("categoryId")]
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         /// <summary>
         /// Name or description for the product category.

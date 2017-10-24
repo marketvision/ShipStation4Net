@@ -69,65 +69,32 @@ namespace ShipStation4Net.Filters
         public ProductsSortBy? SortBy { get; set; }
 
         /// <summary>
+        /// Sets the direction of the sort order.
+        /// </summary>
+        public SortDir? SortDir { get; set; }
+
+        /// <summary>
         /// Specifies whether the list should include inactive products.
         /// Default: false. 
         /// </summary>
         public bool? ShowInactive { get; set; }
 
-        public override HttpRequestMessage AddFilter(HttpRequestMessage request)
+        protected override Dictionary<string, object> GetFilters()
         {
-            var filters = new Dictionary<string, string>();
+            var res = base.GetFilters();
 
-            if (Sku != null)
-            {
-                filters.Add("sku", Sku);
-            }
-            if (Name != null)
-            {
-                filters.Add("name", Name);
-            }
-            if (ProductCategoryId != null)
-            {
-                filters.Add("productCategoryId", ProductCategoryId);
-            }
-            if (ProductTypeId != null)
-            {
-                filters.Add("productTypeId", ProductTypeId);
-            }
-            if (TagId != null)
-            {
-                filters.Add("tagId", TagId);
-            }
-            if (StartDate != null)
-            {
-                filters.Add("startDate", StartDate.Value.ToString());
-            }
-            if (EndDate != null)
-            {
-                filters.Add("endDate", EndDate.Value.ToString());
-            }
-            if (ShowInactive != null)
-            {
-                filters.Add("showInactive", ShowInactive.Value.ToString());
-            }
+            res["sku"] = Sku;
+            res["name"] = Name;
+            res["productCategoryId"] = ProductCategoryId;
+            res["productTypeId"] = ProductTypeId;
+            res["tagId"] = TagId;
+            res["startDate"] = StartDate;
+            res["endDate"] = EndDate;
+            res["sortBy"] = SortBy;
+            res["sortDir"] = SortDir;
+            res["showInactive"] = ShowInactive;
 
-            if (PageSize != null)
-            {
-                filters.Add("pageSize", PageSize.Value.ToString());
-            }
-            if (Page != null)
-            {
-                filters.Add("page", Page.Value.ToString());
-            }
-
-            if (SortBy != null)
-            {
-                filters.Add("sortBy", JsonConvert.SerializeObject(SortBy).Trim('\"'));
-            }
-
-            request.RequestUri = new Uri(string.Format("{0}?{1}", request.RequestUri, EncodeFilterString(filters)), UriKind.Relative);
-
-            return request;
+            return res;
         }
     }
 }

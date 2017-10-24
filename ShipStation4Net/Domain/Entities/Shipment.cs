@@ -22,52 +22,14 @@ using System.Collections.Generic;
 
 namespace ShipStation4Net.Domain.Entities
 {
-    public class ShipmentItem
-    {
-        [JsonProperty("orderItemId")]
-        public int OrderItemId { get; set; }
-
-        [JsonProperty("lineItemKey")]
-        public string LineItemKey { get; set; }
-
-        [JsonProperty("sku")]
-        public string Sku { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        [JsonProperty("imageUrl")]
-        public string ImageUrl { get; set; }
-
-        [JsonProperty("weight")]
-        public Weight Weight { get; set; }
-
-        [JsonProperty("quantity")]
-        public int Quantity { get; set; }
-
-        [JsonProperty("unitPrice")]
-        public int UnitPrice { get; set; }
-
-        [JsonProperty("warehouseLocation")]
-        public string WarehouseLocation { get; set; }
-
-        [JsonProperty("options")]
-        public string Options { get; set; }
-
-        [JsonProperty("productId")]
-        public int ProductId { get; set; }
-
-        [JsonProperty("fulfillmentSku")]
-        public string FulfillmentSku { get; set; }
-    }
 
     public class Shipment
     {
         [JsonProperty("shipmentId")]
-        public int ShipmentId { get; set; }
+        public int? ShipmentId { get; set; }
 
         [JsonProperty("orderId")]
-        public int OrderId { get; set; }
+        public int? OrderId { get; set; }
 
         [JsonProperty("userId")]
         public string UserId { get; set; }
@@ -76,22 +38,22 @@ namespace ShipStation4Net.Domain.Entities
         public string OrderNumber { get; set; }
 
         [JsonProperty("createDate")]
-        public DateTime CreateDate { get; set; }
+        public DateTime? CreateDate { get; set; }
 
         [JsonProperty("shipDate")]
         public string ShipDate { get; set; }
 
         [JsonProperty("shipmentCost")]
-        public double ShipmentCost { get; set; }
+        public double? ShipmentCost { get; set; }
 
         [JsonProperty("insuranceCost")]
-        public double InsuranceCost { get; set; }
+        public double? InsuranceCost { get; set; }
 
         [JsonProperty("trackingNumber")]
         public string TrackingNumber { get; set; }
 
         [JsonProperty("isReturnLabel")]
-        public bool IsReturnLabel { get; set; }
+        public bool? IsReturnLabel { get; set; }
 
         [JsonProperty("batchNumber")]
         public string BatchNumber { get; set; }
@@ -109,16 +71,16 @@ namespace ShipStation4Net.Domain.Entities
         public string Confirmation { get; set; }
 
         [JsonProperty("warehouseId")]
-        public int WarehouseId { get; set; }
+        public int? WarehouseId { get; set; }
 
         [JsonProperty("voided")]
-        public bool Voided { get; set; }
+        public bool? Voided { get; set; }
 
         [JsonProperty("voidDate")]
         public DateTime? VoidDate { get; set; }
 
         [JsonProperty("marketplaceNotified")]
-        public bool MarketplaceNotified { get; set; }
+        public bool? MarketplaceNotified { get; set; }
 
         [JsonProperty("notifyErrorMessage")]
         public string NotifyErrorMessage { get; set; }

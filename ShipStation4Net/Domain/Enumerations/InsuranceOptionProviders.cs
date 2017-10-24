@@ -23,12 +23,12 @@ using System.Runtime.Serialization;
 namespace ShipStation4Net.Domain.Enumerations
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum SortDir
+    public enum InsuranceOptionProviders
     {
-        [EnumMember(Value = "ASC")]
-        Ascending = 0,
+        [EnumMember(Value = "shipsurance")]
+        Shipsurance = 0,
 
-        [EnumMember(Value = "DESC")]
-        Descending = 1
+        [EnumMember(Value = "carrier")]
+        Carrier = 1
     }
 }

@@ -17,22 +17,28 @@
 #endregion
 
 using Newtonsoft.Json;
+using ShipStation4Net.Domain.Enumerations;
 
 namespace ShipStation4Net.Domain.Entities
 {
-    public class Rate
+    public class InsuranceOptions
     {
-        [JsonProperty("serviceName")]
-        public string ServiceName { get; set; }
+        /// <summary>
+        /// Preferred Insurance provider. Available options: "shipsurance" or "carrier"
+        /// </summary>
+        [JsonProperty("provider")]
+        public InsuranceOptionProviders? Provider { get; set; }
 
-        [JsonProperty("serviceCode")]
-        public string ServiceCode { get; set; }
+        /// <summary>
+        /// Indicates whether shipment should be insured.
+        /// </summary>
+        [JsonProperty("insureShipment")]
+        public bool? InsureShipment { get; set; }
 
-        [JsonProperty("shipmentCost")]
-        public double? ShipmentCost { get; set; }
-
-        [JsonProperty("otherCost")]
-        public double? OtherCost { get; set; }
+        /// <summary>
+        /// Value to insure.
+        /// </summary>
+        [JsonProperty("insuredValue")]
+        public double? InsuredValue { get; set; }
     }
-    
 }

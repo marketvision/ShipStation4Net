@@ -24,7 +24,7 @@ namespace ShipStation4Net.Domain.Entities
     public class Fulfillment : Order
     {
         [JsonProperty("fulfillmentId")]
-        public int FulfillmentId { get; set; }
+        public int? FulfillmentId { get; set; }
 
         [JsonProperty("trackingNumber")]
         public string TrackingNumber { get; set; }
@@ -45,13 +45,13 @@ namespace ShipStation4Net.Domain.Entities
         public double? FulfillmentFee { get; set; }
 
         [JsonProperty("voidRequested")]
-        public bool IsVoidRequested { get; set; }
+        public bool? IsVoidRequested { get; set; }
 
         [JsonProperty("voided")]
-        public bool IsVoided { get; set; }
+        public bool? IsVoided { get; set; }
 
         [JsonProperty("marketplaceNotified")]
-        public bool IsMarketplaceNotified { get; set; }
+        public bool? IsMarketplaceNotified { get; set; }
 
         [JsonProperty("notifyErrorMessage")]
         public string NotifyErrorMessage { get; set; }

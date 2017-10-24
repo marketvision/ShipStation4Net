@@ -127,7 +127,7 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="id">The id of the order to delete.</param>
         /// <returns>A boolean representing whether or not the delete was successful.</returns>
-        public async Task<bool> DeleteAsync(string id)
+        public async Task<bool> DeleteAsync(int id)
         {
             return await DeleteDataAsync(id);
         }
@@ -197,7 +197,7 @@ namespace ShipStation4Net.Clients
         /// <returns>All orders that match the specified status and tag ID.</returns>
         public async Task<IList<Order>> ListOrdersByTagAsync(int tagId, OrderStatus orderStatus, int page = 1, int pageSize = 100)
         {
-            var filter = new OrdersFilter
+            var filter = new OrdersByTagFilter
             {
                 TagId = tagId,
                 OrderStatus = orderStatus,
@@ -205,7 +205,7 @@ namespace ShipStation4Net.Clients
                 PageSize = pageSize
             };
 
-            var response = await GetDataAsync<OrdersPaginatedResponse>(filter);
+            var response = await GetDataAsync<OrdersPaginatedResponse>("listbytag", filter);
 
             return response.Items;
         }

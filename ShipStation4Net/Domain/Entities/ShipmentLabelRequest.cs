@@ -51,7 +51,7 @@ namespace ShipStation4Net.Domain.Entities
         /// The date the shipment will be shipped.
         /// </summary>
         [JsonProperty("shipDate")]
-        public DateTime ShipDate { get; set; }
+        public DateTime? ShipDate { get; set; }
 
         /// <summary>
         /// Shipment's weight.
@@ -99,6 +99,6 @@ namespace ShipStation4Net.Domain.Entities
         /// Specifies whether a test label should be created. Default value: false.
         /// </summary>
         [JsonProperty("testLabel")]
-        public bool TestLabel { get; set; }
+        public bool? TestLabel { get; set; }
     }
 }

@@ -93,7 +93,7 @@ namespace ShipStation4Net.Domain.Entities
         /// Returns rates that account for the specified delivery confirmation type. Default value: false
         /// </summary>
         [JsonProperty("residential")]
-        public bool IsResidential { get; set; }
+        public bool? IsResidential { get; set; }
     }
 
 }

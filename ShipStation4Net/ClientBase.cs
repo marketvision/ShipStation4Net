@@ -18,11 +18,14 @@
 
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using ShipStation4Net.Converters;
 using ShipStation4Net.Events;
 using ShipStation4Net.Exceptions;
+using ShipStation4Net.FaultHandling;
 using ShipStation4Net.Filters;
 using ShipStation4Net.Responses;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,6 +37,8 @@ namespace ShipStation4Net
     public abstract class ClientBase
     {
         public readonly Configuration Configuration;
+
+        public static readonly JsonSerializerSettings SerializerSettings;
 
         public int ApiLimitRemaining { get; set; }
         public int LimitResetSeconds { get; set; }
@@ -48,19 +53,48 @@ namespace ShipStation4Net
 
         public event EventHandler<ShipStationResponseEventArgs> RequestCompleted;
 
+        public RetryPolicy RetryPolicy = RetryPolicy.RetryOnApiLimit;
+
         protected string BaseUri { get; set; }
+
+        static ClientBase()
+        {
+            //'DateTime Format and Time Zone' section of ShipStation documentation - ShipStation API operates in PST/PDT
+            TimeZoneInfo PacificTimezone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+
+            SerializerSettings = new JsonSerializerSettings()
+            {
+                Converters = new List<JsonConverter>()
+                {
+                    new SpecificTimeZoneDateConverter("yyyy-MM-dd HH:mm:ss", PacificTimezone)
+                },
+                NullValueHandling = NullValueHandling.Ignore
+            };
+        }
 
         public ClientBase(Configuration configuration)
         {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            configuration.AreConfigurationSet();
+
             Configuration = configuration;
             LimitResetSeconds = 30;
             ApiLimitRemaining = Configuration.ApiLimit;
+
         }
 
         protected async Task<T> GetDataAsync<T>()
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, BaseUri);
-            var response = await ExecuteRequest<T>(message);
+            var response = await RetryPolicy.ExecuteAction(async () =>
+            {
+                var message = new HttpRequestMessage(HttpMethod.Get, BaseUri);
+                return await ExecuteRequest<T>(message);
+            });
+
             return response.Data;
         }
 
@@ -78,16 +112,21 @@ namespace ShipStation4Net
                 endpoint = string.Format("{0}{1}", BaseUri, resourceEndpoint);
             }
 
-            var message = new HttpRequestMessage(HttpMethod.Get, endpoint);
-
-            if (filter != null && !resourceEndpoint.Contains("?"))
+            var response = await RetryPolicy.ExecuteAction(async () =>
             {
-                filter.AddFilter(message);
-            }
+                var message = new HttpRequestMessage(HttpMethod.Get, endpoint);
 
-            var uri = message.RequestUri.ToString();
+                if (filter != null && !resourceEndpoint.Contains("?"))
+                {
+                    filter.AddFilter(message);
+                }
 
-            var response = await ExecuteRequest<T>(message);
+                var uri = message.RequestUri.ToString();
+
+                var resp = await ExecuteRequest<T>(message);
+                return resp;
+            });
+
             return response.Data;
         }
 
@@ -103,9 +142,14 @@ namespace ShipStation4Net
 
         protected async Task<TResponse> PostDataAsync<TRequest, TResponse>(string resourceEndpoint, TRequest data)
         {
-            var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
-            message.Content = new StringContent(JsonConvert.SerializeObject(data), System.Text.Encoding.UTF8, "application/json");
-            var response = await ExecuteRequest<TResponse>(message);
+            var response = await RetryPolicy.ExecuteAction(async () =>
+            {
+                var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
+                var body = JsonConvert.SerializeObject(data, SerializerSettings);
+                message.Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
+                return await ExecuteRequest<TResponse>(message);
+            });
+
             return response.Data;
         }
 
@@ -121,17 +165,29 @@ namespace ShipStation4Net
 
         protected async Task<T> PutDataAsync<T>(string resourceEndpoint, T data)
         {
-            var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
-            message.Content = new StringContent(JsonConvert.SerializeObject(data));
-            var response = await ExecuteRequest<T>(message);
+            var response = await RetryPolicy.ExecuteAction(async () =>
+            {
+                var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
+                message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings));
+                return await ExecuteRequest<T>(message);
+            });
+
             return response.Data;
+        }
+
+        protected async Task<bool> DeleteDataAsync(int id)
+        {
+            return await DeleteDataAsync(string.Format("{0}/{1}", BaseUri, id));
         }
 
         protected async Task<bool> DeleteDataAsync(string resourceEndpoint)
         {
-            var message = new HttpRequestMessage(HttpMethod.Delete, resourceEndpoint);
+            var response = await RetryPolicy.ExecuteAction(async () =>
+            {
+                var message = new HttpRequestMessage(HttpMethod.Delete, resourceEndpoint);
+                return await ExecuteRequest<SuccessResponse>(message);
+            });
 
-            var response = await ExecuteRequest<SuccessResponse>(message);
             return response.Data.Success;
         }
 
@@ -191,7 +247,7 @@ namespace ShipStation4Net
 
                 var json = await httpResponse.Content.ReadAsStringAsync();
                 ApiStateLogger.LogDebug(headerString + json);
-                T responseData = JsonConvert.DeserializeObject<T>(json);
+                T responseData = JsonConvert.DeserializeObject<T>(json, SerializerSettings);
 
                 response = new RestResponse<T>
                 {
