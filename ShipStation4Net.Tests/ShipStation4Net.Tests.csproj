@@ -7,13 +7,40 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Results\**" />
-    <EmbeddedResource Remove="Results\**" />
-    <None Remove="Results\**" />
+    <None Remove="configuration.json" />
+    <None Remove="Results\carrier_test.json" />
+    <None Remove="Results\customer_test.json" />
+    <None Remove="Results\fulfillment_test.json" />
+    <None Remove="Results\order_test.json" />
+    <None Remove="Results\product_test.json" />
+    <None Remove="Results\store_test.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="configuration.json" />
+    <Content Include="configuration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Results\carrier_test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Results\customer_test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Results\fulfillment_test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Results\order_test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Results\product_test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Results\store_test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Results\warehouse_test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
