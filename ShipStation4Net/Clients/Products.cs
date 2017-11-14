@@ -33,9 +33,9 @@ namespace ShipStation4Net.Clients
             BaseUri = "products";
         }
 
-        public async Task<Product> GetAsync(int id)
+        public Task<Product> GetAsync(int id)
         {
-            return await GetDataAsync<Product>(id);
+            return GetDataAsync<Product>(id);
         }
 
         /// <summary>
@@ -47,14 +47,14 @@ namespace ShipStation4Net.Clients
         public async Task<IList<Product>> GetAllPagesAsync(IFilter filter)
         {
             var items = new List<Product>();
-            filter = filter ?? new ProductsFilter ();
+            filter = filter ?? new ProductsFilter();
 
             filter.Page = 1;
             filter.PageSize = 500;
 
-            var pageOne = await GetDataAsync<ProductsPaginatedResponse>((ProductsFilter)filter);
+            var pageOne = await GetDataAsync<ProductsPaginatedResponse>((ProductsFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
-            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, (ProductsFilter)filter));
+            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, (ProductsFilter)filter).ConfigureAwait(false));
 
             return items;
         }
@@ -71,7 +71,7 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<ProductsPaginatedResponse>((ProductsFilter)filter);
+            var response = await GetDataAsync<ProductsPaginatedResponse>((ProductsFilter)filter).ConfigureAwait(false);
             return response.Items;
         }
 
@@ -86,7 +86,7 @@ namespace ShipStation4Net.Clients
 
             for (int i = start; i <= end; i++)
             {
-                items.AddRange(await GetPageAsync(i, pageSize, (ProductsFilter)filter));
+                items.AddRange(await GetPageAsync(i, pageSize, (ProductsFilter)filter).ConfigureAwait(false));
             }
             return items;
         }
@@ -101,9 +101,9 @@ namespace ShipStation4Net.Clients
         /// </param>
         /// <param name="item"></param>
         /// <returns>The updated product.</returns>
-        public async Task<Product> UpdateAsync(int id, Product item)
+        public Task<Product> UpdateAsync(int id, Product item)
         {
-            return await PutDataAsync(id.ToString(), item);
+            return PutDataAsync(id.ToString(), item);
         }
     }
 }

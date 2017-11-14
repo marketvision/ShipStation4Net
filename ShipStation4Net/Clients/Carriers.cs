@@ -37,18 +37,18 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="id">The requested carrier</param>
         /// <returns>The requested carrier</returns>
-        public async Task<Carrier> GetAsync(string carrierCode)
+        public Task<Carrier> GetAsync(string carrierCode)
         {
-            return await GetDataAsync<Carrier>($"getcarrier?carrierCode={carrierCode}");
+            return GetDataAsync<Carrier>($"getcarrier?carrierCode={carrierCode}");
         }
 
         /// <summary>
         /// Lists all shipping providers connected to this account.
         /// </summary>
         /// <returns>A list of carriers</returns>
-        public async Task<IList<Carrier>> GetItemsAsync()
+        public Task<IList<Carrier>> GetItemsAsync()
         {
-            return await GetDataAsync<IList<Carrier>>();
+            return GetDataAsync<IList<Carrier>>();
         }
 
         /// <summary>
@@ -58,12 +58,12 @@ namespace ShipStation4Net.Clients
         /// <param name="amount">The dollar amount to add to the account. The minimum value that can be added is $10.00. The maximum value
         /// is $10,000.00.</param>
         /// <returns>The changed carrier with the dollar amount added to it.</returns>
-        public async Task<Carrier> AddFundsAsync(string carrierCode, double amount)
+        public Task<Carrier> AddFundsAsync(string carrierCode, double amount)
         {
             var fundsRequest = new JObject();
             fundsRequest["carrierCode"] = carrierCode;
             fundsRequest["amount"] = amount;
-            return await PostDataAsync<JObject, Carrier>("addfunds", fundsRequest);
+            return PostDataAsync<JObject, Carrier>("addfunds", fundsRequest);
         }
 
         /// <summary>
@@ -71,9 +71,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="carrierCode">The carrier's code</param>
         /// <returns>A list of packages for the specified carrier</returns>
-        public async Task<IList<Package>> GetPackages(string carrierCode)
+        public Task<IList<Package>> GetPackages(string carrierCode)
         {
-            return await GetDataAsync<IList<Package>>($"listpackages?carrierCode={carrierCode}");
+            return GetDataAsync<IList<Package>>($"listpackages?carrierCode={carrierCode}");
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="carrierCode">The carrier's code</param>
         /// <returns>The list of available shipping services provided by the specified carrier</returns>
-        public async Task<IList<Package>> GetServices(string carrierCode)
+        public Task<IList<Package>> GetServices(string carrierCode)
         {
-            return await GetDataAsync<IList<Package>>($"listservices?carrierCode={carrierCode}");
+            return GetDataAsync<IList<Package>>($"listservices?carrierCode={carrierCode}");
         }
     }
 }

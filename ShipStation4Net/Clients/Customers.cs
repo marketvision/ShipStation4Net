@@ -38,9 +38,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="id">The system generated identifier for the Customer. Example: 12345678.</param>
         /// <returns>The specified customer.</returns>
-        public async Task<Customer> GetAsync(int id)
+        public Task<Customer> GetAsync(int id)
         {
-            return await GetDataAsync<Customer>(id.ToString());
+            return GetDataAsync<Customer>(id.ToString());
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace ShipStation4Net.Clients
             filter.Page = 1;
             filter.PageSize = 500;
 
-            var pageOne = await GetDataAsync<CustomersPaginatedResponse>((CustomersFilter)filter);
+            var pageOne = await GetDataAsync<CustomersPaginatedResponse>((CustomersFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
-            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, filter));
+            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, filter).ConfigureAwait(false));
 
             return items;
         }
@@ -74,7 +74,7 @@ namespace ShipStation4Net.Clients
 
             for (int i = start; i <= end; i++)
             {
-                items.AddRange(await GetPageAsync(i, pageSize, (CustomersFilter)filter));
+                items.AddRange(await GetPageAsync(i, pageSize, (CustomersFilter)filter).ConfigureAwait(false));
             }
             return items;
         }
@@ -91,7 +91,7 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<CustomersPaginatedResponse>(filter);
+            var response = await GetDataAsync<CustomersPaginatedResponse>(filter).ConfigureAwait(false);
             return response.Items;
         }
     }

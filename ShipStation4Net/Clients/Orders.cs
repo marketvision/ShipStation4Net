@@ -50,9 +50,9 @@ namespace ShipStation4Net.Clients
             filter.Page = 1;
             filter.PageSize = 500;
 
-            var pageOne = await GetDataAsync<OrdersPaginatedResponse>((OrdersFilter)filter);
+            var pageOne = await GetDataAsync<OrdersPaginatedResponse>((OrdersFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
-            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, filter));
+            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, filter).ConfigureAwait(false));
 
             return items;
         }
@@ -68,7 +68,7 @@ namespace ShipStation4Net.Clients
 
             for (int i = start; i <= end; i++)
             {
-                items.AddRange(await GetPageAsync(i, pageSize, (OrdersFilter)filter));
+                items.AddRange(await GetPageAsync(i, pageSize, (OrdersFilter)filter).ConfigureAwait(false));
             }
             return items;
         }
@@ -85,7 +85,7 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<OrdersPaginatedResponse>((OrdersFilter)filter);
+            var response = await GetDataAsync<OrdersPaginatedResponse>((OrdersFilter)filter).ConfigureAwait(false);
             return response.Items;
         }
 
@@ -96,9 +96,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="newItem">A newly created order</param>
         /// <returns>The order with fields assigned to it by the API.</returns>
-        public async Task<Order> CreateAsync(Order newItem)
+        public Task<Order> CreateAsync(Order newItem)
         {
-            return await PostDataAsync("createorder", newItem);
+            return PostDataAsync("createorder", newItem);
         }
 
         /// <summary>
@@ -106,9 +106,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="item">The item to update.</param>
         /// <returns>The updated order.</returns>
-        public async Task<Order> UpdateAsync(Order item)
+        public Task<Order> UpdateAsync(Order item)
         {
-            return await CreateAsync(item);
+            return CreateAsync(item);
         }
 
         /// <summary>
@@ -116,9 +116,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="id">The id of the order to retrieve.</param>
         /// <returns>The order specified by the id.</returns>
-        public async Task<Order> GetAsync(int id)
+        public Task<Order> GetAsync(int id)
         {
-            return await GetDataAsync<Order>(id);
+            return GetDataAsync<Order>(id);
         }
 
         /// <summary>
@@ -127,9 +127,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="id">The id of the order to delete.</param>
         /// <returns>A boolean representing whether or not the delete was successful.</returns>
-        public async Task<bool> DeleteAsync(int id)
+        public Task<bool> DeleteAsync(int id)
         {
-            return await DeleteDataAsync(id);
+            return DeleteDataAsync(id);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace ShipStation4Net.Clients
             assignUserRequest["orderIds"] = new JArray(orderIds);
             assignUserRequest["userId"] = userId;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("assignuser", assignUserRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("assignuser", assignUserRequest).ConfigureAwait(false);
 
             return response.Success;
         }
@@ -156,9 +156,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="order">The order to create a label from.</param>
         /// <returns>A Shipment with the label data.</returns>
-        public async Task<Shipment> CreateLabelFromOrderAsync(Order order)
+        public Task<Shipment> CreateLabelFromOrderAsync(Order order)
         {
-            return await PostDataAsync<Order, Shipment>("createlabelfororder", order);
+            return PostDataAsync<Order, Shipment>("createlabelfororder", order);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace ShipStation4Net.Clients
             holdOrderRequest["orderId"] = orderId;
             holdOrderRequest["holdUntilDate"] = holdUntilDate.ToString();
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("holduntil", holdOrderRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("holduntil", holdOrderRequest).ConfigureAwait(false);
 
             return response.Success;
         }
@@ -205,7 +205,7 @@ namespace ShipStation4Net.Clients
                 PageSize = pageSize
             };
 
-            var response = await GetDataAsync<OrdersPaginatedResponse>("listbytag", filter);
+            var response = await GetDataAsync<OrdersPaginatedResponse>("listbytag", filter).ConfigureAwait(false);
 
             return response.Items;
         }
@@ -215,9 +215,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="request">A variant of the order object</param>
         /// <returns>A response that contains the order id and number.</returns>
-        public async Task<MarkOrderAsShippedResponse> MarkOrderAsShippedAsync(MarkOrderAsShippedRequest request)
+        public Task<MarkOrderAsShippedResponse> MarkOrderAsShippedAsync(MarkOrderAsShippedRequest request)
         {
-            return await PostDataAsync<MarkOrderAsShippedRequest, MarkOrderAsShippedResponse>("markasshipped", request);
+            return PostDataAsync<MarkOrderAsShippedRequest, MarkOrderAsShippedResponse>("markasshipped", request);
         }
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace ShipStation4Net.Clients
             addTagRequest["orderId"] = orderId;
             addTagRequest["tagId"] = tagId;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("addtag", addTagRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("addtag", addTagRequest).ConfigureAwait(false);
 
             return response.Success;
         }
@@ -249,7 +249,7 @@ namespace ShipStation4Net.Clients
             removeTagRequest["orderId"] = orderId;
             removeTagRequest["tagId"] = tagId;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("removetag", removeTagRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("removetag", removeTagRequest).ConfigureAwait(false);
 
             return response.Success;
         }
@@ -265,7 +265,7 @@ namespace ShipStation4Net.Clients
             var restoreOrderRequest = new JObject();
             restoreOrderRequest["orderId"] = orderId;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("restorefromhold", restoreOrderRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("restorefromhold", restoreOrderRequest).ConfigureAwait(false);
 
             return response.Success;
         }
@@ -281,7 +281,7 @@ namespace ShipStation4Net.Clients
             var unassignUserRequest = new JObject();
             unassignUserRequest["orderIds"] = new JArray(orderIds);
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("unassignuser", unassignUserRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("unassignuser", unassignUserRequest).ConfigureAwait(false);
             return response.Success;
         }
     }

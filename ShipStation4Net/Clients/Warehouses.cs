@@ -40,9 +40,9 @@ namespace ShipStation4Net.Clients
             return PostDataAsync(newItem);
         }
 
-        public async Task<Warehouse> GetAsync(int id)
+        public Task<Warehouse> GetAsync(int id)
         {
-            return await GetDataAsync<Warehouse>(id);
+            return GetDataAsync<Warehouse>(id);
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace ShipStation4Net.Clients
         /// Example: 12345678.</param>
         /// <param name="item">The warehouse data to update with.</param>
         /// <returns></returns>
-        public async Task<Warehouse> UpdateAsync(int id, Warehouse item)
+        public Task<Warehouse> UpdateAsync(int id, Warehouse item)
         {
-            return await PutDataAsync(id, item);
+            return PutDataAsync(id, item);
         }
 
         /// <summary>
@@ -65,9 +65,9 @@ namespace ShipStation4Net.Clients
         /// called "Ship From Locations" in the UI.
         /// </summary>
         /// <returns>A list of active Ship From Locations.</returns>
-        public async Task<IList<Warehouse>> GetItemsAsync()
+        public Task<IList<Warehouse>> GetItemsAsync()
         {
-            return await GetDataAsync<IList<Warehouse>>();
+            return GetDataAsync<IList<Warehouse>>();
         }
     }
 }

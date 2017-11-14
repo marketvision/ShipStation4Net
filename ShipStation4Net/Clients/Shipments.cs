@@ -47,14 +47,14 @@ namespace ShipStation4Net.Clients
         public async Task<IList<Shipment>> GetAllPagesAsync(IFilter filter)
         {
             var items = new List<Shipment>();
-            filter = filter ?? new ShipmentsFilter ();
+            filter = filter ?? new ShipmentsFilter();
 
             filter.Page = 1;
             filter.PageSize = 500;
 
-            var pageOne = await GetDataAsync<ShipmentsPaginatedResponse>((ShipmentsFilter)filter);
+            var pageOne = await GetDataAsync<ShipmentsPaginatedResponse>((ShipmentsFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
-            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, (ShipmentsFilter)filter));
+            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, (ShipmentsFilter)filter).ConfigureAwait(false));
 
             return items;
         }
@@ -71,7 +71,7 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<ShipmentsPaginatedResponse>((ShipmentsFilter)filter);
+            var response = await GetDataAsync<ShipmentsPaginatedResponse>((ShipmentsFilter)filter).ConfigureAwait(false);
             return response.Items;
         }
 
@@ -86,7 +86,7 @@ namespace ShipStation4Net.Clients
 
             for (int i = start; i <= end; i++)
             {
-                items.AddRange(await GetPageAsync(i, pageSize, (ShipmentsFilter)filter));
+                items.AddRange(await GetPageAsync(i, pageSize, (ShipmentsFilter)filter).ConfigureAwait(false));
             }
             return items;
         }
@@ -97,9 +97,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="request">A request that specifies the parameters of the shipment label.</param>
         /// <returns>The shipping label matching the requested parameters.</returns>
-        public async Task<ShipmentLabel> CreateShipmentLabelAsync(ShipmentLabelRequest request)
+        public Task<ShipmentLabel> CreateShipmentLabelAsync(ShipmentLabelRequest request)
         {
-            return await PostDataAsync<ShipmentLabelRequest, ShipmentLabel>("createlabel", request);
+            return PostDataAsync<ShipmentLabelRequest, ShipmentLabel>("createlabel", request);
         }
 
         /// <summary>
@@ -107,9 +107,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="request">A request that specifies the parameters of a shipment.</param>
         /// <returns>A list of rates matching the requested shipment.</returns>
-        public async Task<IList<Rate>> GetRatesAsync(RatesRequest request)
+        public Task<IList<Rate>> GetRatesAsync(RatesRequest request)
         {
-            return await PostDataAsync<RatesRequest, IList<Rate>>("getrates", request);
+            return PostDataAsync<RatesRequest, IList<Rate>>("getrates", request);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace ShipStation4Net.Clients
             var voidLabelRequest = new JObject();
             voidLabelRequest["shipmentId"] = shipmentId;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("voidlabel", voidLabelRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("voidlabel", voidLabelRequest).ConfigureAwait(false);
 
             return response.Success;
         }

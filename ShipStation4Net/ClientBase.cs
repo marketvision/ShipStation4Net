@@ -84,23 +84,22 @@ namespace ShipStation4Net
             Configuration = configuration;
             LimitResetSeconds = 30;
             ApiLimitRemaining = Configuration.ApiLimit;
-
         }
 
         protected async Task<T> GetDataAsync<T>()
         {
-            var response = await RetryPolicy.ExecuteAction(async () =>
+            var response = await RetryPolicy.ExecuteAction(() =>
             {
                 var message = new HttpRequestMessage(HttpMethod.Get, BaseUri);
-                return await ExecuteRequest<T>(message);
-            });
+                return ExecuteRequest<T>(message);
+            }).ConfigureAwait(false);
 
             return response.Data;
         }
 
-        protected async Task<T> GetDataAsync<T>(IFilter filter)
+        protected Task<T> GetDataAsync<T>(IFilter filter)
         {
-            return await GetDataAsync<T>("", filter);
+            return GetDataAsync<T>("", filter);
         }
 
         protected async Task<T> GetDataAsync<T>(string resourceEndpoint, IFilter filter = null)
@@ -112,7 +111,7 @@ namespace ShipStation4Net
                 endpoint = string.Format("{0}{1}", BaseUri, resourceEndpoint);
             }
 
-            var response = await RetryPolicy.ExecuteAction(async () =>
+            var response = await RetryPolicy.ExecuteAction(() =>
             {
                 var message = new HttpRequestMessage(HttpMethod.Get, endpoint);
 
@@ -123,70 +122,70 @@ namespace ShipStation4Net
 
                 var uri = message.RequestUri.ToString();
 
-                var resp = await ExecuteRequest<T>(message);
+                var resp = ExecuteRequest<T>(message);
                 return resp;
-            });
+            }).ConfigureAwait(false);
 
             return response.Data;
         }
 
-        protected async Task<T> GetDataAsync<T>(int id)
+        protected Task<T> GetDataAsync<T>(int id)
         {
-            return await GetDataAsync<T>(id.ToString(), null);
+            return GetDataAsync<T>(id.ToString(), null);
         }
 
-        protected async Task<T> PostDataAsync<T>(T data)
+        protected Task<T> PostDataAsync<T>(T data)
         {
-            return await PostDataAsync(BaseUri, data);
+            return PostDataAsync(BaseUri, data);
         }
 
         protected async Task<TResponse> PostDataAsync<TRequest, TResponse>(string resourceEndpoint, TRequest data)
         {
-            var response = await RetryPolicy.ExecuteAction(async () =>
+            var response = await RetryPolicy.ExecuteAction(() =>
             {
                 var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
                 var body = JsonConvert.SerializeObject(data, SerializerSettings);
                 message.Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
-                return await ExecuteRequest<TResponse>(message);
-            });
+                return ExecuteRequest<TResponse>(message);
+            }).ConfigureAwait(false);
 
             return response.Data;
         }
 
-        protected async Task<T> PostDataAsync<T>(string resourceEndpoint, T data)
+        protected Task<T> PostDataAsync<T>(string resourceEndpoint, T data)
         {
-            return await PostDataAsync<T, T>(resourceEndpoint, data);
+            return PostDataAsync<T, T>(resourceEndpoint, data);
         }
 
-        protected async Task<T> PutDataAsync<T>(int id, T data)
+        protected Task<T> PutDataAsync<T>(int id, T data)
         {
-            return await PutDataAsync(string.Format("{0}/{1}", BaseUri, id), data);
+            return PutDataAsync(string.Format("{0}/{1}", BaseUri, id), data);
         }
 
         protected async Task<T> PutDataAsync<T>(string resourceEndpoint, T data)
         {
-            var response = await RetryPolicy.ExecuteAction(async () =>
+            var response = await RetryPolicy.ExecuteAction(() =>
             {
                 var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
                 message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings));
-                return await ExecuteRequest<T>(message);
-            });
+                return ExecuteRequest<T>(message);
+            }).ConfigureAwait(false);
 
             return response.Data;
         }
 
-        protected async Task<bool> DeleteDataAsync(int id)
+        protected Task<bool> DeleteDataAsync(int id)
         {
-            return await DeleteDataAsync(string.Format("{0}/{1}", BaseUri, id));
+            return DeleteDataAsync(string.Format("{0}/{1}", BaseUri, id));
         }
 
         protected async Task<bool> DeleteDataAsync(string resourceEndpoint)
         {
-            var response = await RetryPolicy.ExecuteAction(async () =>
+            var response = await RetryPolicy.ExecuteAction(() =>
             {
                 var message = new HttpRequestMessage(HttpMethod.Delete, resourceEndpoint);
-                return await ExecuteRequest<SuccessResponse>(message);
-            });
+                return ExecuteRequest<SuccessResponse>(message);
+            }).ConfigureAwait(false);
 
             return response.Data.Success;
         }
@@ -201,7 +200,7 @@ namespace ShipStation4Net
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.BaseAddress = Configuration.BaseUri;
-                var httpResponse = await client.SendAsync(message);
+                var httpResponse = await client.SendAsync(message).ConfigureAwait(false);
 
                 if (Configuration.PartnerId != null)
                 {
@@ -245,7 +244,7 @@ namespace ShipStation4Net
                     headerString += $"{header.Key}: {header.Value}\n";
                 }
 
-                var json = await httpResponse.Content.ReadAsStringAsync();
+                var json = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 ApiStateLogger.LogDebug(headerString + json);
                 T responseData = JsonConvert.DeserializeObject<T>(json, SerializerSettings);
 
