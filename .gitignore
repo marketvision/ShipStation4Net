@@ -290,3 +290,6 @@ __pycache__/
 # Unit Test Configuration Files
 /ShipStation4Net.Tests/Results/*
 /ShipStation4Net.Tests/configuration.json
+
+# Directories which start with '.'
+**/.*/
