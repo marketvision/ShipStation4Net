@@ -58,9 +58,9 @@ namespace ShipStation4Net.FaultHandling
         /// Repetitively executes the specified action while it satisfies the current retry policy.
         /// </summary>
         /// <param name="action">A delegate representing the executable action which doesn't return any results.</param>
-        public async virtual void ExecuteAction(Task action)
+        public virtual Task ExecuteAction(Task action)
         {
-            await this.ExecuteAction(async () => { await action; return action; });
+            return this.ExecuteAction(async () => { await action; return action; });
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace ShipStation4Net.FaultHandling
 
                 try
                 {
-                    return await func();
+                    return await func().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

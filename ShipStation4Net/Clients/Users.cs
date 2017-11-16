@@ -36,9 +36,9 @@ namespace ShipStation4Net.Clients
         /// A list of users.
         /// </summary>
         /// <returns>A list of users.</returns>
-        public async Task<IList<User>> GetItemsAsync()
+        public Task<IList<User>> GetItemsAsync()
         {
-            return await GetDataAsync<IList<User>>();
+            return GetDataAsync<IList<User>>();
         }
     }
 }

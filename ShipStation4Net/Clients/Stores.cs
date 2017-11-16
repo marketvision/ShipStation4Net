@@ -33,9 +33,9 @@ namespace ShipStation4Net.Clients
             BaseUri = "stores";
         }
 
-        public async Task<Store> GetAsync(int id)
+        public Task<Store> GetAsync(int id)
         {
-            return await GetDataAsync<Store>(id);
+            return GetDataAsync<Store>(id);
         }
 
         /// <summary>
@@ -47,16 +47,16 @@ namespace ShipStation4Net.Clients
         /// Example: 12345. </param>
         /// <param name="item">The store data to update.</param>
         /// <returns>The updated store.</returns>
-        public async Task<Store> UpdateAsync(int id, Store item)
+        public Task<Store> UpdateAsync(int id, Store item)
         {
-            return await PutDataAsync(id, item);
+            return PutDataAsync(id, item);
         }
 
         /// <summary>
         /// Retrieve the list of installed stores on the account.
         /// </summary>
         /// <returns>A list of installed stores on the account.</returns>
-        public async Task<IList<Store>> GetItemsAsync(bool showInactive = false, int? marketplaceId = null)
+        public Task<IList<Store>> GetItemsAsync(bool showInactive = false, int? marketplaceId = null)
         {
             var filter = (showInactive || marketplaceId != null) ? "?" : "";
             if (showInactive)
@@ -71,7 +71,7 @@ namespace ShipStation4Net.Clients
             {
                 filter += "marketplaceId=" + marketplaceId.Value.ToString();
             }
-            return await GetDataAsync<IList<Store>>(filter);
+            return GetDataAsync<IList<Store>>(filter);
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace ShipStation4Net.Clients
         /// Specifies the store whose status will be retrieved.
         /// Example: 12345.</param>
         /// <returns>A response containing details regarding the store refresh status.</returns>
-        public async Task<StoreRefreshStatusResponse> GetStoreRefreshStatusAsync(int storeId)
+        public Task<StoreRefreshStatusResponse> GetStoreRefreshStatusAsync(int storeId)
         {
-            return await GetDataAsync<StoreRefreshStatusResponse>($"getrefreshstatus?storeId={storeId}");
+            return GetDataAsync<StoreRefreshStatusResponse>($"getrefreshstatus?storeId={storeId}");
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace ShipStation4Net.Clients
             refreshStoreRequest["storeId"] = storeId;
             refreshStoreRequest["refreshDate"] = refreshDate;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("refreshstore", refreshStoreRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("refreshstore", refreshStoreRequest).ConfigureAwait(false);
 
             return response.Success;
         }
@@ -112,9 +112,9 @@ namespace ShipStation4Net.Clients
         /// Lists the marketplaces that can be integrated with ShipStation.
         /// </summary>
         /// <returns></returns>
-        public async Task<IList<Marketplace>> GetMarketplacesAsync()
+        public Task<IList<Marketplace>> GetMarketplacesAsync()
         {
-            return await GetDataAsync<IList<Marketplace>>("marketplaces");
+            return GetDataAsync<IList<Marketplace>>("marketplaces");
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace ShipStation4Net.Clients
             var deactivateStoreRequest = new JObject();
             deactivateStoreRequest["storeId"] = storeId;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("deactivate", deactivateStoreRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("deactivate", deactivateStoreRequest).ConfigureAwait(false);
 
             return response.Success;
         }
@@ -142,7 +142,7 @@ namespace ShipStation4Net.Clients
             var deactivateStoreRequest = new JObject();
             deactivateStoreRequest["storeId"] = storeId;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("reactivate", deactivateStoreRequest);
+            var response = await PostDataAsync<JObject, SuccessResponse>("reactivate", deactivateStoreRequest).ConfigureAwait(false);
 
             return response.Success;
         }

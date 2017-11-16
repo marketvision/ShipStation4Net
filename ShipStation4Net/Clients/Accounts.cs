@@ -44,7 +44,7 @@ namespace ShipStation4Net.Clients
         /// <returns>The new account with fields updated by ShipStation.</returns>
         public async Task<User> CreateAsync(User newItem)
         {
-            var accountCreatedResponse = await PostDataAsync<User, AccountCreatedResponse>("registeraccount", newItem);
+            var accountCreatedResponse = await PostDataAsync<User, AccountCreatedResponse>("registeraccount", newItem).ConfigureAwait(false);
             if (!accountCreatedResponse.Success)
             {
                 return null;
@@ -56,9 +56,9 @@ namespace ShipStation4Net.Clients
         /// Lists all tags defined for this account.
         /// </summary>
         /// <returns>All tags defined for this account.</returns>
-        public async Task<IList<Tag>> GetTagsAsync()
+        public Task<IList<Tag>> GetTagsAsync()
         {
-            return await GetDataAsync<IList<Tag>>("listtags");
+            return GetDataAsync<IList<Tag>>("listtags");
         }
     }
 }
