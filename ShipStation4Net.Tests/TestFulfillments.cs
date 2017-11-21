@@ -11,6 +11,8 @@ namespace ShipStation4Net.Tests
 {
     public class TestFulfillments : TestBase
     {
+        int testFulfillmentId = 398825;
+
         [Fact]
         public async void TestGetPageOneFulfillments()
         {
@@ -22,18 +24,15 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetFulfillment()
         {
-            var testFulfillment = JsonConvert.DeserializeObject<Fulfillment>(File.ReadAllText("Results/fulfillment_test.json"));
+            var fulfillment = await Client.Fulfillments.GetAsync(testFulfillmentId);
 
-            var fulfillment = await Client.Fulfillments.GetAsync(testFulfillment.FulfillmentId.Value);
-
-            Assert.Equal(JsonConvert.SerializeObject(testFulfillment), JsonConvert.SerializeObject(fulfillment));
+            Assert.IsType<Fulfillment>(fulfillment);
+            Assert.Equal(fulfillment.FulfillmentId, testFulfillmentId);
         }
 
         [Fact]
         public async void TestGetFulfillmentsWithCreateDateFilter()
         {
-            var testFulfillment = JsonConvert.DeserializeObject<Fulfillment>(File.ReadAllText("Results/fulfillment_test.json"));
-
             var createDateFilter = new FulfillmentsFilter
             {
                 CreateDateStart = DateTime.Now.Subtract(TimeSpan.FromDays(30)),
@@ -49,8 +48,6 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetFulfillmentsWithShipDateFilter()
         {
-            var testFulfillment = JsonConvert.DeserializeObject<Fulfillment>(File.ReadAllText("Results/fulfillment_test.json"));
-
             var shipDateFilter = new FulfillmentsFilter
             {
                 ShipDateStart = DateTime.Now.Subtract(TimeSpan.FromDays(30)),
@@ -66,31 +63,27 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetFulfillmentsWithNameFilter()
         {
-            var testFulfillment = JsonConvert.DeserializeObject<Fulfillment>(File.ReadAllText("Results/fulfillment_test.json"));
-
             var nameFilter = new FulfillmentsFilter
             {
-                RecipientName = testFulfillment.ShipTo.Name
+                RecipientName = "John Hamilton"
             };
 
             var fulfillments = await Client.Fulfillments.GetPageAsync(1, 1, nameFilter) as List<Fulfillment>;
 
-            Assert.Equal(fulfillments[0].ShipTo.Name, testFulfillment.ShipTo.Name);
+            Assert.Equal("John Hamilton", fulfillments[0].ShipTo.Name);
         }
 
         [Fact]
         public async void TestGetFulfillmentsWithTrackingNumberFilter()
         {
-            var testFulfillment = JsonConvert.DeserializeObject<Fulfillment>(File.ReadAllText("Results/fulfillment_test.json"));
-
             var trackingNoFilter = new FulfillmentsFilter
             {
-                TrackingNumber = testFulfillment.TrackingNumber
+                TrackingNumber = "1ZEF91370195769272"
             };
 
             var fulfillments = await Client.Fulfillments.GetPageAsync(1, 1, trackingNoFilter) as List<Fulfillment>;
 
-            Assert.Equal(fulfillments[0].TrackingNumber, testFulfillment.TrackingNumber);
+            Assert.Equal("1ZEF91370195769272", fulfillments[0].TrackingNumber);
         }
     }
 }

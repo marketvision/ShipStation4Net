@@ -10,14 +10,15 @@ namespace ShipStation4Net.Tests
 {
     public class TestProducts : TestBase
     {
+        int testProductId = 12162243;
+
         [Fact]
         public async void TestGetProduct()
         {
-            var testProduct = JsonConvert.DeserializeObject<Product>(File.ReadAllText("Results/product_test.json"));
+            var product = await Client.Products.GetAsync(testProductId);
 
-            var product = await Client.Products.GetAsync(testProduct.ProductId.Value);
-
-            Assert.Equal(JsonConvert.SerializeObject(testProduct), JsonConvert.SerializeObject(product));
+            Assert.IsType<Product>(product);
+            Assert.Equal(testProductId, product.ProductId);
         }
 
         [Fact]
@@ -57,10 +58,9 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetProductsWithNameFilter()
         {
-            var testProduct = JsonConvert.DeserializeObject<Product>(File.ReadAllText("Results/product_test.json"));
             var productsFilter = new ProductsFilter
             {
-                Name = testProduct.Name
+                Name = "Sweepstakes Giveaway"
             };
 
             var products = await Client.Products.GetPageAsync(1, 100, productsFilter) as List<Product>;

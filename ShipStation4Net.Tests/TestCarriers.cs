@@ -8,17 +8,15 @@ namespace ShipStation4Net.Tests
 {
     public class TestCarriers : TestBase
     {
+        string testCarrierCode = "stamps_com";
+
         [Fact]
         public async void TestGetCarrier()
         {
-            var testCarrier = JsonConvert.DeserializeObject<Carrier>(File.ReadAllText("Results/carrier_test.json"));
+            var carrier = await Client.Carriers.GetAsync(testCarrierCode);
 
-            var carrier = await Client.Carriers.GetAsync(testCarrier.Code);
-
-            Assert.Equal(carrier.AccountNumber, testCarrier.AccountNumber);
-            Assert.Equal(carrier.Code, testCarrier.Code);
-            Assert.Equal(carrier.Name, testCarrier.Name);
-            Assert.Equal(carrier.RequiresFundedAccount, testCarrier.RequiresFundedAccount);
+            Assert.IsType<Carrier>(carrier);
+            Assert.Equal(testCarrierCode, carrier.Code);
         }
 
         [Fact]
@@ -32,9 +30,7 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetCarrierPackages()
         {
-            var testCarrier = JsonConvert.DeserializeObject<Carrier>(File.ReadAllText("Results/carrier_test.json"));
-
-            var packages = await Client.Carriers.GetPackages(testCarrier.Code) as List<Package>;
+            var packages = await Client.Carriers.GetPackages(testCarrierCode) as List<Package>;
 
             Assert.True(packages.Count > 0);
         }
@@ -42,9 +38,7 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetCarrierServices()
         {
-            var testCarrier = JsonConvert.DeserializeObject<Carrier>(File.ReadAllText("Results/carrier_test.json"));
-
-            var packages = await Client.Carriers.GetServices(testCarrier.Code) as List<Package>;
+            var packages = await Client.Carriers.GetServices(testCarrierCode) as List<Package>;
 
             Assert.True(packages.Count > 0);
         }

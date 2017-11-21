@@ -9,10 +9,11 @@ namespace ShipStation4Net.Tests
 {
     public class TestCustomers : TestBase
     {
+        int testCustomerId = 123745004;
+
         [Fact]
         public async void TestGetPageOneCustomers()
         {
-
             var customers = await Client.Customers.GetPageAsync(1) as List<Customer>;
 
             Assert.True(customers.Count > 0);
@@ -36,11 +37,10 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetCustomerAsync()
         {
-            var testCustomer = JsonConvert.DeserializeObject<Customer>(File.ReadAllText("Results/customer_test.json"));
+            var customer = await Client.Customers.GetAsync(testCustomerId);
 
-            var carrier = await Client.Customers.GetAsync(testCustomer.CustomerId.Value);
-
-            Assert.Equal(JsonConvert.SerializeObject(carrier), JsonConvert.SerializeObject(testCustomer));
+            Assert.IsType<Customer>(customer);
+            Assert.Equal(testCustomerId, customer.CustomerId);
         }
     }
 }

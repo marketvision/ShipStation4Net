@@ -9,14 +9,15 @@ namespace ShipStation4Net.Tests
 {
     public class TestOrders : TestBase
     {
+        int testOrderId = 14920239;
+
         [Fact]
         public async void TestGetOrder()
         {
-            var testOrder = JsonConvert.DeserializeObject<Order>(File.ReadAllText("Results/order_test.json"));
+            var order = await Client.Orders.GetAsync(testOrderId);
 
-            var order = await Client.Orders.GetAsync(testOrder.OrderId.Value);
-
-            Assert.Equal(JsonConvert.SerializeObject(testOrder), JsonConvert.SerializeObject(order));
+            Assert.IsType<Order>(order);
+            Assert.Equal(testOrderId, order.OrderId);
         }
 
         [Fact]

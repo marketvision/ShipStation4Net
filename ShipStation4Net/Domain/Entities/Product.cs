@@ -17,7 +17,6 @@
 #endregion
 
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace ShipStation4Net.Domain.Entities

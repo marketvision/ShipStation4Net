@@ -17,11 +17,14 @@
 #endregion
 
 using Newtonsoft.Json;
+using ShipStation4Net.Converters;
+using ShipStation4Net.Domain.Entities;
 using System.Collections.Generic;
 
 namespace ShipStation4Net.Responses
 {
-    public abstract class PaginatedResponse<T> : IPaginatedResponse<T>
+    [JsonConverter(typeof(DynamicPropertyNameConverter))]
+    public class PaginatedResponse<T> : IPaginatedResponse<T>
     {
         public PaginatedResponse()
         {
@@ -37,6 +40,11 @@ namespace ShipStation4Net.Responses
         [JsonProperty("pages")]
         public int Pages { get; set; }
 
+        [JsonPropertyNameByType("customers", typeof(IList<Customer>))]
+        [JsonPropertyNameByType("fulfillments", typeof(IList<Fulfillment>))]
+        [JsonPropertyNameByType("orders", typeof(IList<Order>))]
+        [JsonPropertyNameByType("products", typeof(IList<Product>))]
+        [JsonPropertyNameByType("shipments", typeof(IList<Shipment>))]
         public virtual IList<T> Items { get; set; }
     }
 }

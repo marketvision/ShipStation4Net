@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ShipStation4Net.Filters;
-using ShipStation4Net.Responses.PaginatedResponses;
+using ShipStation4Net.Responses;
 
 namespace ShipStation4Net.Clients
 {
@@ -52,7 +52,7 @@ namespace ShipStation4Net.Clients
             filter.Page = 1;
             filter.PageSize = 500;
 
-            var pageOne = await GetDataAsync<ProductsPaginatedResponse>((ProductsFilter)filter).ConfigureAwait(false);
+            var pageOne = await GetDataAsync<PaginatedResponse<Product>>((ProductsFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
             items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, (ProductsFilter)filter).ConfigureAwait(false));
 
@@ -71,7 +71,7 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<ProductsPaginatedResponse>((ProductsFilter)filter).ConfigureAwait(false);
+            var response = await GetDataAsync<PaginatedResponse<Product>>((ProductsFilter)filter).ConfigureAwait(false);
             return response.Items;
         }
 

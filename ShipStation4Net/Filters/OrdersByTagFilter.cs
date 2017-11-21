@@ -17,7 +17,6 @@
 #endregion
 
 using ShipStation4Net.Domain.Enumerations;
-using System;
 using System.Collections.Generic;
 
 namespace ShipStation4Net.Filters

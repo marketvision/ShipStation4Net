@@ -16,9 +16,7 @@
  */
 #endregion
 
-using ShipStation4Net.Domain.Entities;
 using System.Net.Http;
-using System;
 
 namespace ShipStation4Net.Responses
 {

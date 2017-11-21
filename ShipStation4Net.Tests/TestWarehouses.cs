@@ -8,16 +8,15 @@ namespace ShipStation4Net.Tests
 {
     public class TestWarehouses : TestBase
     {
+        int testWarehouseId = 8893;
+
         [Fact]
         public async void TestGetWarehouse()
         {
-            var testWarehouse = JsonConvert.DeserializeObject<Warehouse>(File.ReadAllText("Results/warehouse_test.json"));
-
-            var warehouse = await Client.Warehouses.GetAsync(testWarehouse.WarehouseId.Value);
+            var warehouse = await Client.Warehouses.GetAsync(testWarehouseId);
             
-            // I have to do this so the local data goes through the same transformation the remote one does. Modify Date may cause complications.
-            
-            Assert.Equal(JsonConvert.SerializeObject(warehouse), JsonConvert.SerializeObject(warehouse));
+            Assert.IsType<Warehouse>(warehouse);
+            Assert.Equal(testWarehouseId, warehouse.WarehouseId);
         }
 
         [Fact]

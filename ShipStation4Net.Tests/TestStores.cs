@@ -8,12 +8,24 @@ namespace ShipStation4Net.Tests
 {
     public class TestStores : TestBase
     {
+        int testStoreId = 10162;
+        int testMarketplaceId = 13;
+
         [Fact]
         public async void TestGetStoresAsync()
         {
             var stores = await Client.Stores.GetItemsAsync() as List<Store>;
 
             Assert.True(stores.Count > 0);
+        }
+
+        [Fact]
+        public async void TestGetStoreAsync()
+        {
+            var store = await Client.Stores.GetAsync(testStoreId);
+
+            Assert.IsType<Store>(store);
+            Assert.Equal(10162, store.StoreId);
         }
 
         [Fact]
@@ -25,11 +37,9 @@ namespace ShipStation4Net.Tests
         }
 
         [Fact]
-        public async void TestGetStoreAsync()
+        public async void TestGetStoreByMarketplaceAsync()
         {
-            var testStore = JsonConvert.DeserializeObject<Store>(File.ReadAllText("Results/store_test.json"));
-
-            var stores = await Client.Stores.GetItemsAsync(false, testStore.StoreId) as List<Store>;
+            var stores = await Client.Stores.GetItemsAsync(false, testMarketplaceId) as List<Store>;
 
             Assert.True(stores.Count > 0);
         }
@@ -37,11 +47,9 @@ namespace ShipStation4Net.Tests
         [Fact]
         public async void TestGetStoreRefreshStatusAsync()
         {
-            var testStore = JsonConvert.DeserializeObject<Store>(File.ReadAllText("Results/store_test.json"));
+            var refreshStatus = await Client.Stores.GetStoreRefreshStatusAsync(testStoreId);
 
-            var refreshStatus = await Client.Stores.GetStoreRefreshStatusAsync(testStore.StoreId.Value);
-
-            Assert.Equal(testStore.StoreId, refreshStatus.StoreId);
+            Assert.Equal(testStoreId, refreshStatus.StoreId);
         }
     }
 }

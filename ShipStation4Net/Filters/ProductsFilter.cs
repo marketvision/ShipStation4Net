@@ -16,11 +16,9 @@
  */
 #endregion
 
-using Newtonsoft.Json;
 using ShipStation4Net.Domain.Enumerations;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 
 namespace ShipStation4Net.Filters
 {

@@ -21,7 +21,6 @@ using ShipStation4Net.Clients.Interfaces;
 using ShipStation4Net.Domain.Entities;
 using ShipStation4Net.Filters;
 using ShipStation4Net.Responses;
-using ShipStation4Net.Responses.PaginatedResponses;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -52,7 +51,7 @@ namespace ShipStation4Net.Clients
             filter.Page = 1;
             filter.PageSize = 500;
 
-            var pageOne = await GetDataAsync<ShipmentsPaginatedResponse>((ShipmentsFilter)filter).ConfigureAwait(false);
+            var pageOne = await GetDataAsync<PaginatedResponse<Shipment>>((ShipmentsFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
             items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, (ShipmentsFilter)filter).ConfigureAwait(false));
 
@@ -71,7 +70,7 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<ShipmentsPaginatedResponse>((ShipmentsFilter)filter).ConfigureAwait(false);
+            var response = await GetDataAsync<PaginatedResponse<Shipment>>((ShipmentsFilter)filter).ConfigureAwait(false);
             return response.Items;
         }
 
