@@ -28,14 +28,14 @@ namespace ShipStation4Net.FaultHandling
         /// <param name="retryStrategy">The retry strategy to use for this retry policy.</param>
         public RetryPolicy(ITransientErrorDetectionStrategy errorDetectionStrategy, RetryStrategy retryStrategy)
         {
-            this.ErrorDetectionStrategy = errorDetectionStrategy;
+            ErrorDetectionStrategy = errorDetectionStrategy;
 
             if (errorDetectionStrategy == null)
             {
                 throw new InvalidOperationException("The error detection strategy type must implement the ITransientErrorDetectionStrategy interface.");
             }
 
-            this.RetryStrategy = retryStrategy;
+            RetryStrategy = retryStrategy;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace ShipStation4Net.FaultHandling
             TimeSpan delay = TimeSpan.Zero;
             Exception lastError;
 
-            var shouldRetry = this.RetryStrategy.GetShouldRetry();
+            var shouldRetry = RetryStrategy.GetShouldRetry();
 
             for (; ; )
             {
@@ -88,7 +88,7 @@ namespace ShipStation4Net.FaultHandling
                 {
                     lastError = ex;
 
-                    if (!(this.ErrorDetectionStrategy.IsTransient(lastError) && shouldRetry(retryCount++, lastError, out delay)))
+                    if (!(ErrorDetectionStrategy.IsTransient(lastError) && shouldRetry(retryCount++, lastError, out delay)))
                     {
                         throw;
                     }
@@ -101,9 +101,9 @@ namespace ShipStation4Net.FaultHandling
                     delay = TimeSpan.Zero;
                 }
 
-                this.OnRetrying(retryCount, lastError, delay);
+                OnRetrying(retryCount, lastError, delay);
 
-                if (retryCount > 1 || !this.RetryStrategy.FastFirstRetry)
+                if (retryCount > 1 || !RetryStrategy.FastFirstRetry)
                 {
                     await Task.Delay(delay).ConfigureAwait(false);
                 }
@@ -118,9 +118,9 @@ namespace ShipStation4Net.FaultHandling
         /// <param name="delay">The delay indicating how long the current thread will be suspended for before the next iteration will be invoked.</param>
         protected virtual void OnRetrying(int retryCount, Exception lastError, TimeSpan delay)
         {
-            if (this.Retrying != null)
+            if (Retrying != null)
             {
-                this.Retrying(this, new RetryingEventArgs(retryCount, delay, lastError));
+                Retrying(this, new RetryingEventArgs(retryCount, delay, lastError));
             }
         }
     }
