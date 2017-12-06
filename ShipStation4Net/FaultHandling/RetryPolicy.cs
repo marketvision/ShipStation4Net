@@ -1,6 +1,5 @@
 ﻿using ShipStation4Net.FaultHandling.Strategies;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ShipStation4Net.FaultHandling
@@ -106,7 +105,7 @@ namespace ShipStation4Net.FaultHandling
 
                 if (retryCount > 1 || !this.RetryStrategy.FastFirstRetry)
                 {
-                    Thread.Sleep(delay);
+                    await Task.Delay(delay).ConfigureAwait(false);
                 }
             }
         }
