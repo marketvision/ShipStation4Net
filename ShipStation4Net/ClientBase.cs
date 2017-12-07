@@ -200,13 +200,13 @@ namespace ShipStation4Net
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.BaseAddress = Configuration.BaseUri;
-                var httpResponse = await client.SendAsync(message).ConfigureAwait(false);
 
                 if (Configuration.PartnerId != null)
                 {
                     client.DefaultRequestHeaders.Add("X-Partner", Configuration.PartnerId);
                 }
 
+                var httpResponse = await client.SendAsync(message).ConfigureAwait(false);
                 ApiLimitRemaining = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Remaining").FirstOrDefault());
                 LimitResetSeconds = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Reset").FirstOrDefault());
                 ApiLimit = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Limit").FirstOrDefault());

@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>0.10.1</Version>
+    <Version>0.10.29</Version>
     <Description>A .NET Standard Library using System.Net.HttpClient and NewtonSoft.Json which provides access to the ShipStation API.</Description>
     <Company>Nine Line Apparel</Company>
     <Authors>Brandon James</Authors>
@@ -13,8 +13,8 @@
     <Copyright>Brandon James 2017</Copyright>
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/nla-brandonjames/ShipStation4Net</RepositoryUrl>
-    <AssemblyVersion>0.10.1.0</AssemblyVersion>
-    <FileVersion>0.10.1.0</FileVersion>
+    <AssemblyVersion>0.10.1.30</AssemblyVersion>
+    <FileVersion>0.10.1.30</FileVersion>
     <RepositoryType>Git</RepositoryType>
     <PackageReleaseNotes>Updated readme
 
