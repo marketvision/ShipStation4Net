@@ -30,6 +30,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace ShipStation4Net
@@ -60,7 +61,14 @@ namespace ShipStation4Net
         static ClientBase()
         {
             //'DateTime Format and Time Zone' section of ShipStation documentation - ShipStation API operates in PST/PDT
-            TimeZoneInfo PacificTimezone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var timezoneString = "Pacific Standard Time";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                timezoneString = "America/Los_Angeles";
+            }
+
+            var PacificTimezone = TimeZoneInfo.FindSystemTimeZoneById(timezoneString);
 
             SerializerSettings = new JsonSerializerSettings()
             {
