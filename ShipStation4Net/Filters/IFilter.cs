@@ -22,9 +22,9 @@ namespace ShipStation4Net.Filters
 {
     public interface IFilter
     {
-        int? Page { get; set; }
+        int Page { get; set; }
 
-        int? PageSize { get; set; }
+        int PageSize { get; set; }
 
         HttpRequestMessage AddFilter(HttpRequestMessage request);
     }

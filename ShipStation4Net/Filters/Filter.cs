@@ -27,24 +27,28 @@ namespace ShipStation4Net.Filters
 {
     public class Filter : IFilter
     {
+        public Filter()
+        {
+            Page = 1;
+            PageSize = 100;
+        }
+
         /// <summary>
         /// Page number.
         /// Default: 1.
         /// </summary>
-        public int? Page { get; set; }
+        public int Page { get; set; }
 
         /// <summary>
         /// Requested page size.Max value is 500.
         /// Default: 100. 
         /// </summary>
-        public int? PageSize { get; set; }
+        public int PageSize { get; set; }
 
         protected virtual Dictionary<string, object> GetFilters()
         {
-            if (PageSize.HasValue && PageSize.Value > 500)
-            {
-                throw new ArgumentOutOfRangeException("pageSize", "Should be between 1..500");
-            }
+            if (Page < 1) throw new ArgumentException(nameof(Page), "Cannot be a negative or zero");
+            if (PageSize < 1 || PageSize > 500) throw new ArgumentOutOfRangeException(nameof(PageSize), "Should be in range 1..500");
 
             return new Dictionary<string, object>()
             {
