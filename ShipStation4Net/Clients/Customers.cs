@@ -52,22 +52,18 @@ namespace ShipStation4Net.Clients
             var items = new List<Customer>();
             filter = filter ?? new CustomersFilter();
 
-            filter.Page = 1;
-            filter.PageSize = 500;
-
             var pageOne = await GetDataAsync<PaginatedResponse<Customer>>((CustomersFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
-            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, filter).ConfigureAwait(false));
+            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, filter.PageSize, filter).ConfigureAwait(false));
 
             return items;
         }
 
         public async Task<IList<Customer>> GetPageRangeAsync(int start, int end, int pageSize = 100, IFilter filter = null)
         {
-            if (pageSize < 1 || pageSize > 500)
-            {
-                throw new ArgumentOutOfRangeException("pageSize", "Should be in range 1..500");
-            }
+            if (start < 1) throw new ArgumentException(nameof(start), "Cannot be a negative or zero");
+            if (start > end) throw new ArgumentException(nameof(end), "Invalid page range");
+            if (pageSize < 1 || pageSize > 500) throw new ArgumentOutOfRangeException(nameof(pageSize), "Should be in range 1..500");
 
             var items = new List<Customer>();
 
@@ -80,10 +76,8 @@ namespace ShipStation4Net.Clients
 
         public async Task<IList<Customer>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null)
         {
-            if (pageSize < 1 || pageSize > 500)
-            {
-                throw new ArgumentOutOfRangeException("pageSize", "Should be in range 1..500");
-            }
+            if (page < 1) throw new ArgumentException(nameof(page), "Cannot be a negative or zero");
+            if (pageSize < 1 || pageSize > 500) throw new ArgumentOutOfRangeException(nameof(pageSize), "Should be in range 1..500");
 
             filter = filter ?? new CustomersFilter();
 

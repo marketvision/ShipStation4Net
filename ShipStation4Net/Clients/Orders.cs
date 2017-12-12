@@ -36,6 +36,28 @@ namespace ShipStation4Net.Clients
         }
 
         /// <summary>
+        /// Obtains a list of order pages that match the specified criteria. All of the available filters are optional. They do not need to be 
+        /// included in the URL. The filter is created just for the particular Orders return type.
+        /// </summary>
+        /// <param name="filter">An OrdersFilter</param>
+        /// <returns>A list of order pages filtered by the supplied parameters.</returns>
+        public IEnumerable<IEnumerable<Order>> GetAllPages(IFilter filter = null)
+        {
+            var items = new List<Order>();
+            filter = filter ?? new OrdersFilter();
+
+            var pageOne = GetDataAsync<PaginatedResponse<Order>>((OrdersFilter)filter).Result;
+
+            yield return pageOne.Items;
+
+            for (int i = 2; i <= pageOne.TotalPages; i++)
+            {
+                var currentPage = GetPageAsync(i, filter.PageSize, (OrdersFilter)filter).Result;
+                yield return currentPage;
+            }
+        }
+
+        /// <summary>
         /// Obtains a list of orders that match the specified criteria. All of the available filters are optional. They do not need to be 
         /// included in the URL. The filter is created just for the particular Orders return type.
         /// </summary>
@@ -46,22 +68,18 @@ namespace ShipStation4Net.Clients
             var items = new List<Order>();
             filter = filter ?? new OrdersFilter();
 
-            filter.Page = 1;
-            filter.PageSize = 500;
-
             var pageOne = await GetDataAsync<PaginatedResponse<Order>>((OrdersFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items as List<Order>);
-            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, 500, filter).ConfigureAwait(false));
+            items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, filter.PageSize, filter).ConfigureAwait(false));
 
             return items;
         }
 
         public async Task<IList<Order>> GetPageRangeAsync(int start, int end, int pageSize = 100, IFilter filter = null)
         {
-            if (pageSize < 1 || pageSize > 500)
-            {
-                throw new ArgumentOutOfRangeException("pageSize", "Should be in range 1..500");
-            }
+            if (start < 1) throw new ArgumentException(nameof(start), "Cannot be a negative or zero");
+            if (start > end) throw new ArgumentException(nameof(end), "Invalid page range");
+            if (pageSize < 1 || pageSize > 500) throw new ArgumentOutOfRangeException(nameof(pageSize), "Should be in range 1..500");
 
             var items = new List<Order>();
 
@@ -74,10 +92,8 @@ namespace ShipStation4Net.Clients
 
         public async Task<IList<Order>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null)
         {
-            if (pageSize < 1 || pageSize > 500)
-            {
-                throw new ArgumentOutOfRangeException("pageSize", "Should be in range 1..500");
-            }
+            if (page < 1) throw new ArgumentException(nameof(page), "Cannot be a negative or zero");
+            if (pageSize < 1 || pageSize > 500) throw new ArgumentOutOfRangeException(nameof(pageSize), "Should be in range 1..500");
 
             filter = filter ?? new OrdersFilter();
 
