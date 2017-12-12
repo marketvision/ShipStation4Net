@@ -36,6 +36,28 @@ namespace ShipStation4Net.Clients
         }
 
         /// <summary>
+        /// Obtains a list of order pages that match the specified criteria. All of the available filters are optional. They do not need to be 
+        /// included in the URL. The filter is created just for the particular Orders return type.
+        /// </summary>
+        /// <param name="filter">An OrdersFilter</param>
+        /// <returns>A list of order pages filtered by the supplied parameters.</returns>
+        public IEnumerable<IEnumerable<Order>> GetAllPages(IFilter filter = null)
+        {
+            var items = new List<Order>();
+            filter = filter ?? new OrdersFilter();
+
+            var pageOne = GetDataAsync<PaginatedResponse<Order>>((OrdersFilter)filter).Result;
+
+            yield return pageOne.Items;
+
+            for (int i = 2; i <= pageOne.TotalPages; i++)
+            {
+                var currentPage = GetPageAsync(i, filter.PageSize, (OrdersFilter)filter).Result;
+                yield return currentPage;
+            }
+        }
+
+        /// <summary>
         /// Obtains a list of orders that match the specified criteria. All of the available filters are optional. They do not need to be 
         /// included in the URL. The filter is created just for the particular Orders return type.
         /// </summary>
