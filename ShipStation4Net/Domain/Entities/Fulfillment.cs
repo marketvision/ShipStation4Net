@@ -41,9 +41,6 @@ namespace ShipStation4Net.Domain.Entities
 		[JsonProperty("trackingNumber")]
 		public string TrackingNumber { get; set; }
 
-		[JsonProperty("createDate")]
-		public DateTime? CreateDate { get; set; }
-
 		[JsonProperty("shipDate")]
 		public DateTime? ShipDate { get; set; }
 
