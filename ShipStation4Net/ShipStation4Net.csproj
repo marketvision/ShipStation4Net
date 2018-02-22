@@ -40,7 +40,6 @@ Increment build number</PackageReleaseNotes>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
- 
   <!--net45-->
   <PropertyGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
@@ -54,5 +53,8 @@ Increment build number</PackageReleaseNotes>
     <Reference Include="Microsoft.CSharp" />
     <PackageReference Include="LibLog" Version="4.2.6" /> 
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-  </ItemGroup>
+  </ItemGroup> 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="" />
+  </Target>
 </Project>
