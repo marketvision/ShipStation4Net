@@ -54,7 +54,4 @@ Increment build number</PackageReleaseNotes>
     <PackageReference Include="LibLog" Version="4.2.6" /> 
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup> 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="" />
-  </Target>
 </Project>
