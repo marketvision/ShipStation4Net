@@ -16,7 +16,7 @@ install:
   - cmd: dotnet restore ./ShipStation4Net/ShipStation4Net.csproj --verbosity m
 build_script:
   # output will be in ./src/bin/debug/netcoreapp2.0/publish
-  - cmd: dotnet publish -f = netcoreapp2.0 ./ShipStation4Net/ShipStation4Net.csproj
+  - cmd: dotnet publish ./ShipStation4Net/ShipStation4Net.csproj -f=netcoreapp2.0
 after_build:
   # For once the build has completed
 artifacts:
