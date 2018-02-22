@@ -21,39 +21,60 @@ using System;
 
 namespace ShipStation4Net.Domain.Entities
 {
-    public class Fulfillment : Order
-    {
-        [JsonProperty("fulfillmentId")]
-        public int? FulfillmentId { get; set; }
+	public class Fulfillment : IEntity
+	{
+		[JsonProperty("fulfillmentId")]
+		public int? FulfillmentId { get; set; }
 
-        [JsonProperty("trackingNumber")]
-        public string TrackingNumber { get; set; }
-        
-        [JsonProperty("voidDate")]
-        public DateTime? VoidDate { get; set; }
+		[JsonProperty("orderId")]
+		public int? OrderId { get; set; }
 
-        [JsonProperty("deliveryDate")]
-        public DateTime? DeliveryDate { get; set; }
+		[JsonProperty("orderNumber")]
+		public string OrderNumber { get; set; }
 
-        [JsonProperty("fulfillmentProviderCode")]
-        public string FulfillmentProviderCode { get; set; }
+		[JsonProperty("userId")]
+		public string UserId { get; set; }
 
-        [JsonProperty("fulfillmentServiceCode")]
-        public string FulfillmentServiceCode { get; set; }
+		[JsonProperty("customerEmail")]
+		public string CustomerEmail { get; set; }
 
-        [JsonProperty("fulfillmentFee")]
-        public double? FulfillmentFee { get; set; }
+		[JsonProperty("trackingNumber")]
+		public string TrackingNumber { get; set; }
 
-        [JsonProperty("voidRequested")]
-        public bool? IsVoidRequested { get; set; }
+		[JsonProperty("shipDate")]
+		public DateTime? ShipDate { get; set; }
 
-        [JsonProperty("voided")]
-        public bool? IsVoided { get; set; }
+		[JsonProperty("voidDate")]
+		public DateTime? VoidDate { get; set; }
 
-        [JsonProperty("marketplaceNotified")]
-        public bool? IsMarketplaceNotified { get; set; }
+		[JsonProperty("deliveryDate")]
+		public DateTime? DeliveryDate { get; set; }
 
-        [JsonProperty("notifyErrorMessage")]
-        public string NotifyErrorMessage { get; set; }
-    }
+		[JsonProperty("carrierCode")]
+		public string CarrierCode { get; set; }
+
+		[JsonProperty("fulfillmentProviderCode")]
+		public string FulfillmentProviderCode { get; set; }
+
+		[JsonProperty("fulfillmentServiceCode")]
+		public string FulfillmentServiceCode { get; set; }
+
+		[JsonProperty("fulfillmentFee")]
+		public double? FulfillmentFee { get; set; }
+
+		[JsonProperty("voidRequested")]
+		public bool? IsVoidRequested { get; set; }
+
+		[JsonProperty("voided")]
+		public bool? IsVoided { get; set; }
+
+		[JsonProperty("marketplaceNotified")]
+		public bool? IsMarketplaceNotified { get; set; }
+
+		[JsonProperty("notifyErrorMessage")]
+		public string NotifyErrorMessage { get; set; }
+
+		[JsonProperty("shipTo")]
+		public Address ShipTo { get; set; }
+	}
 }

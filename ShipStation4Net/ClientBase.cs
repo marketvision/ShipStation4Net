@@ -16,7 +16,12 @@
  */
 #endregion
 
+#if NETSTANDARD2_0
 using Microsoft.Extensions.Logging;
+#else
+using ShipStation4Net.Logging;
+#endif
+
 using Newtonsoft.Json;
 using ShipStation4Net.Converters;
 using ShipStation4Net.Events;
@@ -35,253 +40,268 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net
 {
-    public abstract class ClientBase
-    {
-        public readonly Configuration Configuration;
+	public abstract class ClientBase
+	{
+		public readonly Configuration Configuration;
 
-        public static readonly JsonSerializerSettings SerializerSettings;
+		public static readonly JsonSerializerSettings SerializerSettings;
 
-        public int ApiLimitRemaining { get; set; }
-        public int LimitResetSeconds { get; set; }
+		public int ApiLimitRemaining { get; set; }
+		public int LimitResetSeconds { get; set; }
 
-        public int ApiLimit
-        {
-            get { return Configuration.ApiLimit; }
-            set { Configuration.ApiLimit = value; }
-        }
+		public int ApiLimit
+		{
+			get { return Configuration.ApiLimit; }
+			set { Configuration.ApiLimit = value; }
+		}
 
+#if NETSTANDARD2_0
         ILogger ApiStateLogger = new LoggerFactory().CreateLogger("Api State");
+#else
+		ILog ApiStateLogger = LogProvider.For<ClientBase>();
+#endif
 
-        public event EventHandler<ShipStationResponseEventArgs> RequestCompleted;
 
-        public RetryPolicy RetryPolicy = RetryPolicy.RetryOnApiLimit;
+		public event EventHandler<ShipStationResponseEventArgs> RequestCompleted;
 
-        protected string BaseUri { get; set; }
+		public RetryPolicy RetryPolicy = RetryPolicy.RetryOnApiLimit;
 
-        static ClientBase()
-        {
-            //'DateTime Format and Time Zone' section of ShipStation documentation - ShipStation API operates in PST/PDT
-            var timezoneString = "Pacific Standard Time";
+		protected string BaseUri { get; set; }
 
+		static ClientBase()
+		{
+			//'DateTime Format and Time Zone' section of ShipStation documentation - ShipStation API operates in PST/PDT
+			var timezoneString = "Pacific Standard Time";
+
+#if NETSTANDARD2_0
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 timezoneString = "America/Los_Angeles";
             }
+#endif
 
-            var PacificTimezone = TimeZoneInfo.FindSystemTimeZoneById(timezoneString);
+			var PacificTimezone = TimeZoneInfo.FindSystemTimeZoneById(timezoneString);
 
-            SerializerSettings = new JsonSerializerSettings()
-            {
-                Converters = new List<JsonConverter>()
-                {
-                    new SpecificTimeZoneDateConverter("yyyy-MM-dd HH:mm:ss", PacificTimezone)
-                },
-                NullValueHandling = NullValueHandling.Ignore
-            };
-        }
+			SerializerSettings = new JsonSerializerSettings()
+			{
+				Converters = new List<JsonConverter>()
+				{
+					new SpecificTimeZoneDateConverter("yyyy-MM-dd HH:mm:ss", PacificTimezone)
+				},
+				NullValueHandling = NullValueHandling.Ignore
+			};
+		}
 
-        public ClientBase(Configuration configuration)
-        {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
+		public ClientBase(Configuration configuration)
+		{
+			if (configuration == null)
+			{
+				throw new ArgumentNullException(nameof(configuration));
+			}
 
-            configuration.AreConfigurationSet();
+			configuration.AreConfigurationSet();
 
-            Configuration = configuration;
-            LimitResetSeconds = 30;
-            ApiLimitRemaining = Configuration.ApiLimit;
-        }
+			Configuration = configuration;
+			LimitResetSeconds = 30;
+			ApiLimitRemaining = Configuration.ApiLimit;
+		}
 
-        protected async Task<T> GetDataAsync<T>()
-        {
-            var response = await RetryPolicy.ExecuteAction(() =>
-            {
-                var message = new HttpRequestMessage(HttpMethod.Get, BaseUri);
-                return ExecuteRequest<T>(message);
-            }).ConfigureAwait(false);
+		protected async Task<T> GetDataAsync<T>()
+		{
+			var response = await RetryPolicy.ExecuteAction(() =>
+			{
+				var message = new HttpRequestMessage(HttpMethod.Get, BaseUri);
+				return ExecuteRequest<T>(message);
+			}).ConfigureAwait(false);
 
-            return response.Data;
-        }
+			return response.Data;
+		}
 
-        protected Task<T> GetDataAsync<T>(IFilter filter)
-        {
-            return GetDataAsync<T>("", filter);
-        }
+		protected Task<T> GetDataAsync<T>(IFilter filter)
+		{
+			return GetDataAsync<T>("", filter);
+		}
 
-        protected async Task<T> GetDataAsync<T>(string resourceEndpoint, IFilter filter = null)
-        {
-            var endpoint = (string.IsNullOrEmpty(resourceEndpoint)) ? BaseUri : string.Format("{0}/{1}", BaseUri, resourceEndpoint);
-            // If you are supplying the filters yourself 
-            if (resourceEndpoint.StartsWith("?") || resourceEndpoint.Contains("/"))
-            {
-                endpoint = string.Format("{0}{1}", BaseUri, resourceEndpoint);
-            }
+		protected async Task<T> GetDataAsync<T>(string resourceEndpoint, IFilter filter = null)
+		{
+			var endpoint = (string.IsNullOrEmpty(resourceEndpoint)) ? BaseUri : string.Format("{0}/{1}", BaseUri, resourceEndpoint);
+			// If you are supplying the filters yourself 
+			if (resourceEndpoint.StartsWith("?") || resourceEndpoint.Contains("/"))
+			{
+				endpoint = string.Format("{0}{1}", BaseUri, resourceEndpoint);
+			}
 
-            var response = await RetryPolicy.ExecuteAction(() =>
-            {
-                var message = new HttpRequestMessage(HttpMethod.Get, endpoint);
+			var response = await RetryPolicy.ExecuteAction(() =>
+			{
+				var message = new HttpRequestMessage(HttpMethod.Get, endpoint);
 
-                if (filter != null && !resourceEndpoint.Contains("?"))
-                {
-                    filter.AddFilter(message);
-                }
+				if (filter != null && !resourceEndpoint.Contains("?"))
+				{
+					filter.AddFilter(message);
+				}
 
-                var uri = message.RequestUri.ToString();
+				var uri = message.RequestUri.ToString();
 
-                var resp = ExecuteRequest<T>(message);
-                return resp;
-            }).ConfigureAwait(false);
+				var resp = ExecuteRequest<T>(message);
+				return resp;
+			}).ConfigureAwait(false);
 
-            return response.Data;
-        }
+			return response.Data;
+		}
 
-        protected Task<T> GetDataAsync<T>(int id)
-        {
-            return GetDataAsync<T>(id.ToString(), null);
-        }
+		protected Task<T> GetDataAsync<T>(int id)
+		{
+			return GetDataAsync<T>(id.ToString(), null);
+		}
 
-        protected Task<T> PostDataAsync<T>(T data)
-        {
-            return PostDataAsync(BaseUri, data);
-        }
+		protected Task<T> PostDataAsync<T>(T data)
+		{
+			return PostDataAsync(BaseUri, data);
+		}
 
-        protected async Task<TResponse> PostDataAsync<TRequest, TResponse>(string resourceEndpoint, TRequest data)
-        {
-            var response = await RetryPolicy.ExecuteAction(() =>
-            {
-                var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
-                var body = JsonConvert.SerializeObject(data, SerializerSettings);
-                message.Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
-                return ExecuteRequest<TResponse>(message);
-            }).ConfigureAwait(false);
+		protected async Task<TResponse> PostDataAsync<TRequest, TResponse>(string resourceEndpoint, TRequest data)
+		{
+			var response = await RetryPolicy.ExecuteAction(() =>
+			{
+				var message = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}/{1}", BaseUri, resourceEndpoint));
+				var body = JsonConvert.SerializeObject(data, SerializerSettings);
+				message.Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
+				return ExecuteRequest<TResponse>(message);
+			}).ConfigureAwait(false);
 
-            return response.Data;
-        }
+			return response.Data;
+		}
 
-        protected Task<T> PostDataAsync<T>(string resourceEndpoint, T data)
-        {
-            return PostDataAsync<T, T>(resourceEndpoint, data);
-        }
+		protected Task<T> PostDataAsync<T>(string resourceEndpoint, T data)
+		{
+			return PostDataAsync<T, T>(resourceEndpoint, data);
+		}
 
-        protected Task<T> PutDataAsync<T>(int id, T data)
-        {
-            return PutDataAsync(string.Format("{0}/{1}", BaseUri, id), data);
-        }
+		protected Task<T> PutDataAsync<T>(int id, T data)
+		{
+			return PutDataAsync(string.Format("{0}/{1}", BaseUri, id), data);
+		}
 
-        protected async Task<T> PutDataAsync<T>(string resourceEndpoint, T data)
-        {
-            var response = await RetryPolicy.ExecuteAction(() =>
-            {
-                var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
-                message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings));
-                return ExecuteRequest<T>(message);
-            }).ConfigureAwait(false);
+		protected async Task<T> PutDataAsync<T>(string resourceEndpoint, T data)
+		{
+			var response = await RetryPolicy.ExecuteAction(() =>
+			{
+				var message = new HttpRequestMessage(HttpMethod.Put, resourceEndpoint);
+				message.Content = new StringContent(JsonConvert.SerializeObject(data, SerializerSettings));
+				return ExecuteRequest<T>(message);
+			}).ConfigureAwait(false);
 
-            return response.Data;
-        }
+			return response.Data;
+		}
 
-        protected Task<bool> DeleteDataAsync(int id)
-        {
-            return DeleteDataAsync(string.Format("{0}/{1}", BaseUri, id));
-        }
+		protected Task<bool> DeleteDataAsync(int id)
+		{
+			return DeleteDataAsync(string.Format("{0}/{1}", BaseUri, id));
+		}
 
-        protected async Task<bool> DeleteDataAsync(string resourceEndpoint)
-        {
-            var response = await RetryPolicy.ExecuteAction(() =>
-            {
-                var message = new HttpRequestMessage(HttpMethod.Delete, resourceEndpoint);
-                return ExecuteRequest<SuccessResponse>(message);
-            }).ConfigureAwait(false);
+		protected async Task<bool> DeleteDataAsync(string resourceEndpoint)
+		{
+			var response = await RetryPolicy.ExecuteAction(() =>
+			{
+				var message = new HttpRequestMessage(HttpMethod.Delete, resourceEndpoint);
+				return ExecuteRequest<SuccessResponse>(message);
+			}).ConfigureAwait(false);
 
-            return response.Data.Success;
-        }
+			return response.Data.Success;
+		}
 
-        private async Task<IRestResponse<T>> ExecuteRequest<T>(HttpRequestMessage message)
-        {
-            var credentials = new NetworkCredential(Configuration.UserName, Configuration.UserApiKey);
-            var handler = new HttpClientHandler { Credentials = credentials };
-            IRestResponse<T> response;
+		private async Task<IRestResponse<T>> ExecuteRequest<T>(HttpRequestMessage message)
+		{
+			var credentials = new NetworkCredential(Configuration.UserName, Configuration.UserApiKey);
+			var handler = new HttpClientHandler { Credentials = credentials };
+			IRestResponse<T> response;
 
-            using (var client = new HttpClient(handler))
-            {
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.BaseAddress = Configuration.BaseUri;
+			using (var client = new HttpClient(handler))
+			{
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				client.BaseAddress = Configuration.BaseUri;
 
-                if (Configuration.PartnerId != null)
-                {
-                    client.DefaultRequestHeaders.Add("X-Partner", Configuration.PartnerId);
-                }
+				if (Configuration.PartnerId != null)
+				{
+					client.DefaultRequestHeaders.Add("X-Partner", Configuration.PartnerId);
+				}
 
-                var httpResponse = await client.SendAsync(message).ConfigureAwait(false);
-                ApiLimitRemaining = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Remaining").FirstOrDefault());
-                LimitResetSeconds = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Reset").FirstOrDefault());
-                ApiLimit = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Limit").FirstOrDefault());
+				var httpResponse = await client.SendAsync(message).ConfigureAwait(false);
+				ApiLimitRemaining = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Remaining").FirstOrDefault());
+				LimitResetSeconds = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Reset").FirstOrDefault());
+				ApiLimit = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Limit").FirstOrDefault());
 
-                if (!httpResponse.IsSuccessStatusCode)
-                {
-                    switch (httpResponse.StatusCode)
-                    {
-                        case (HttpStatusCode)400:
-                            throw new BadRequestException(httpResponse.ReasonPhrase, httpResponse);
-                        case (HttpStatusCode)401:
-                            throw new NotAuthorizedException(httpResponse.ReasonPhrase, httpResponse);
-                        case (HttpStatusCode)404:
-                            throw new NotFoundException(httpResponse.ReasonPhrase, httpResponse);
-                        case (HttpStatusCode)405:
-                            throw new MethodNotAllowedException(httpResponse.ReasonPhrase, httpResponse);
-                        case (HttpStatusCode)429:
-                            throw new ApiLimitReachedException(
-                                $"{httpResponse.ReasonPhrase}\nThere are {LimitResetSeconds} seconds remaning until a request reset.",
-                                httpResponse,
-                                ApiLimitRemaining,
-                                LimitResetSeconds);
-                        case (HttpStatusCode)500:
-                            throw new InternalServerErrorException(httpResponse.ReasonPhrase, httpResponse);
-                        default:
-                            throw new ShipStationException($"This error is not handled\n{httpResponse.ReasonPhrase}");
-                    }
-                }
+				if (!httpResponse.IsSuccessStatusCode)
+				{
+					switch (httpResponse.StatusCode)
+					{
+						case (HttpStatusCode)400:
+							throw new BadRequestException(httpResponse.ReasonPhrase, httpResponse);
+						case (HttpStatusCode)401:
+							throw new NotAuthorizedException(httpResponse.ReasonPhrase, httpResponse);
+						case (HttpStatusCode)404:
+							throw new NotFoundException(httpResponse.ReasonPhrase, httpResponse);
+						case (HttpStatusCode)405:
+							throw new MethodNotAllowedException(httpResponse.ReasonPhrase, httpResponse);
+						case (HttpStatusCode)429:
+							throw new ApiLimitReachedException(
+								$"{httpResponse.ReasonPhrase}\nThere are {LimitResetSeconds} seconds remaning until a request reset.",
+								httpResponse,
+								ApiLimitRemaining,
+								LimitResetSeconds);
+						case (HttpStatusCode)500:
+							throw new InternalServerErrorException(httpResponse.ReasonPhrase, httpResponse);
+						default:
+							throw new ShipStationException($"This error is not handled\n{httpResponse.ReasonPhrase}");
+					}
+				}
 
-                PrintApiLimitDetails(httpResponse);
-                var headerString = "";
+				PrintApiLimitDetails(httpResponse);
+				var headerString = "";
 
-                foreach (var header in httpResponse.Headers)
-                {
-                    headerString += $"{header.Key}: {header.Value}\n";
-                }
+				foreach (var header in httpResponse.Headers)
+				{
+					headerString += $"{header.Key}: {header.Value}\n";
+				}
 
-                var json = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+				var json = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+#if NETSTANDARD2_0
                 ApiStateLogger.LogDebug(headerString + json);
-                T responseData = JsonConvert.DeserializeObject<T>(json, SerializerSettings);
+#else
+				ApiStateLogger.Log(LogLevel.Debug, () => headerString + json);
+#endif
+				T responseData = JsonConvert.DeserializeObject<T>(json, SerializerSettings);
 
-                response = new RestResponse<T>
-                {
-                    Data = responseData,
-                    Request = message,
-                    Response = httpResponse
-                };
+				response = new RestResponse<T>
+				{
+					Data = responseData,
+					Request = message,
+					Response = httpResponse
+				};
 
-                OnRequestCompleted(response.Request, response.Response);
-            }
+				OnRequestCompleted(response.Request, response.Response);
+			}
 
-            return response;
-        }
+			return response;
+		}
 
-        protected virtual void OnRequestCompleted(HttpRequestMessage request, HttpResponseMessage response)
-        {
-            var responseEventArgs = new ShipStationResponseEventArgs { Request = request, Response = response };
+		protected virtual void OnRequestCompleted(HttpRequestMessage request, HttpResponseMessage response)
+		{
+			var responseEventArgs = new ShipStationResponseEventArgs { Request = request, Response = response };
 
-            RequestCompleted?.Invoke(this, responseEventArgs);
-        }
+			RequestCompleted?.Invoke(this, responseEventArgs);
+		}
 
-        private void PrintApiLimitDetails(HttpResponseMessage response)
-        {
-            string limitRemaining = response.Headers.GetValues("X-Rate-Limit-Remaining").FirstOrDefault();
-            string limitResetSeconds = response.Headers.GetValues("X-Rate-Limit-Reset").FirstOrDefault();
+		private void PrintApiLimitDetails(HttpResponseMessage response)
+		{
+			string limitRemaining = response.Headers.GetValues("X-Rate-Limit-Remaining").FirstOrDefault();
+			string limitResetSeconds = response.Headers.GetValues("X-Rate-Limit-Reset").FirstOrDefault();
 
-            ApiStateLogger.LogInformation($"There are {limitRemaining} requests left before a reset in {limitResetSeconds} seconds.");
-        }
-    }
+#if NETSTANDARD2_0
+			ApiStateLogger.LogInformation($"There are {limitRemaining} requests left before a reset in {limitResetSeconds} seconds.");
+#else
+			ApiStateLogger.Log(LogLevel.Info, () => $"There are {limitRemaining} requests left before a reset in {limitResetSeconds} seconds.");
+#endif
+		}
+	}
 }

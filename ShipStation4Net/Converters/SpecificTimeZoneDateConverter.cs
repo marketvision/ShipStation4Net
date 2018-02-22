@@ -22,37 +22,47 @@ using System;
 
 namespace ShipStation4Net.Converters
 {
-    public class SpecificTimeZoneDateConverter : DateTimeConverterBase
-    {
-        private TimeZoneInfo _timeZoneInfo;
-        private string _dateFormat;
+	public class SpecificTimeZoneDateConverter : DateTimeConverterBase
+	{
+		private TimeZoneInfo _timeZoneInfo;
+		private string _dateFormat;
 
-        public SpecificTimeZoneDateConverter(string dateFormat, TimeZoneInfo timeZoneInfo)
-        {
-            _dateFormat = dateFormat;
-            _timeZoneInfo = timeZoneInfo;
-        }
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(DateTime)
-                || objectType == typeof(DateTime?);
-        }
+		public SpecificTimeZoneDateConverter(string dateFormat, TimeZoneInfo timeZoneInfo)
+		{
+			_dateFormat = dateFormat;
+			_timeZoneInfo = timeZoneInfo;
+		}
+		public override bool CanConvert(Type objectType)
+		{
+			return objectType == typeof(DateTime)
+				|| objectType == typeof(DateTime?);
+		}
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            if(reader.TokenType == JsonToken.Null)
-            {
-                return null;
-            }
+		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+		{
+			if (reader.TokenType == JsonToken.Null)
+			{
+				return null;
+			}
 
-            var value = DateTime.Parse(Convert.ToString(reader.Value));
-            return TimeZoneInfo.ConvertTime(value, _timeZoneInfo, TimeZoneInfo.Local);
-        }
+			var value = DateTime.Parse(Convert.ToString(reader.Value));
+			return TimeZoneInfo.ConvertTime(value, _timeZoneInfo, TimeZoneInfo.Local);
+		}
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            writer.WriteValue(TimeZoneInfo.ConvertTime(Convert.ToDateTime(value), TimeZoneInfo.Local, _timeZoneInfo).ToString(_dateFormat));
-            writer.Flush();
-        }
-    }
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		{
+			var val = value is DateTime ? (DateTime)value : Convert.ToDateTime(value);
+
+			if (val.Kind == DateTimeKind.Unspecified)
+			{
+				val = DateTime.SpecifyKind(val, DateTimeKind.Local);
+			}
+
+			var sourceTimeZone = val.Kind == DateTimeKind.Utc ? TimeZoneInfo.Utc : TimeZoneInfo.Local;
+			val = TimeZoneInfo.ConvertTime(val, sourceTimeZone, _timeZoneInfo);
+
+			writer.WriteValue(val.ToString(_dateFormat));
+			writer.Flush();
+		}
+	}
 }

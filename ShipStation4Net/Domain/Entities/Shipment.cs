@@ -41,7 +41,7 @@ namespace ShipStation4Net.Domain.Entities
         public DateTime? CreateDate { get; set; }
 
         [JsonProperty("shipDate")]
-        public string ShipDate { get; set; }
+        public DateTime? ShipDate { get; set; }
 
         [JsonProperty("shipmentCost")]
         public double? ShipmentCost { get; set; }
