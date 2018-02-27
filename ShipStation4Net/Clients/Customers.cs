@@ -54,9 +54,9 @@ namespace ShipStation4Net.Clients
 
             var pageOne = await GetDataAsync<PaginatedResponse<Customer>>((CustomersFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
-			if (pageOne.TotalPages > 1)
+			if (pageOne.Pages > 1)
 			{
-				items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, filter.PageSize, filter).ConfigureAwait(false));
+				items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, filter).ConfigureAwait(false));
 			}
 
             return items;

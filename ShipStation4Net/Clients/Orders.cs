@@ -50,7 +50,7 @@ namespace ShipStation4Net.Clients
 
             yield return pageOne.Items;
 
-            for (int i = 2; i <= pageOne.TotalPages; i++)
+            for (int i = 2; i <= pageOne.Pages; i++)
             {
                 var currentPage = GetPageAsync(i, filter.PageSize, (OrdersFilter)filter).Result;
                 yield return currentPage;
@@ -70,9 +70,9 @@ namespace ShipStation4Net.Clients
 
             var pageOne = await GetDataAsync<PaginatedResponse<Order>>((OrdersFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items as List<Order>);
-			if (pageOne.TotalPages > 1)
+			if (pageOne.Pages > 1)
 			{
-				items.AddRange(await GetPageRangeAsync(2, pageOne.TotalPages, filter.PageSize, filter).ConfigureAwait(false));
+				items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, filter).ConfigureAwait(false));
 			}
 
             return items;
