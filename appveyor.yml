@@ -14,6 +14,8 @@ install:
   - cmd: dotnet --version
   # Display minimal restore text
   - cmd: dotnet restore ./ShipStation4Net/ShipStation4Net.csproj --verbosity m
+  # Build the project
+  - cmd: dotnet build ./ShipStation4Net/ShipStation4Net.csproj /p:configuration=Release
 test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore ./ShipStation4Net.Tests/ShipStation4Net.Tests.csproj --verbosity m
@@ -21,7 +23,7 @@ test_script:
   - cmd: cd ShipStation4Net.Tests
   - cmd: dotnet test
 build_script:
-  - cmd: dotnet pack ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release 
+  - cmd: dotnet pack ./ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release 
 artifacts:
  - path: '/ShipStation4Net/bin/Release/'
    name: ShipStation4Net
