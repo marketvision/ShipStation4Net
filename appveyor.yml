@@ -14,22 +14,19 @@ install:
   - cmd: dotnet --version
   # Display minimal restore text
   - cmd: dotnet restore ./ShipStation4Net/ShipStation4Net.csproj --verbosity m
-build_script:
-  # output will be in ./src/bin/debug/netcoreapp2.0/publish
-  - cmd: dotnet publish ./ShipStation4Net/ShipStation4Net.csproj -f=netstandard2.0
-after_build:
-  # For once the build has completed
-artifacts:
- - path: '\ShipStation4Net\bin\Debug\netcoreapp2.0\publish'
-   name: ShipStation4Net
-   type: Auto
-clone_depth: 1
 test_script:
   # restore packages for our unit tests
   - cmd: dotnet restore ./ShipStation4Net.Tests/ShipStation4Net.Tests.csproj --verbosity m
   # run the unit tests (requires changing into the test directory)
   - cmd: cd ShipStation4Net.Tests
   - cmd: dotnet test
+build_script:
+  - cmd: dotnet pack ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release 
+artifacts:
+ - path: '/ShipStation4Net/bin/Release/'
+   name: ShipStation4Net
+   type: Auto
+clone_depth: 1
 on_finish :
   # any cleanup in here
-deploy: off
+deploy: on
