@@ -51,7 +51,8 @@ namespace ShipStation4Net.Converters
                 {
                     if (jObject[attr.PropertyName] != null)
                     {
-                        var objectToSet = jObject[attr.PropertyName].ToObject(attr.ObjectType);
+						//we should deserialize object with all conventions applied (e.g. time zone should be converted back as well)
+						var objectToSet = serializer.Deserialize(jObject[attr.PropertyName].CreateReader(), attr.ObjectType);
                         existingValue.GetType().GetProperty(prop.Name).SetValue(existingValue, objectToSet);
                     }
                 }
