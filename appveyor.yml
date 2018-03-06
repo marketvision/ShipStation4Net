@@ -21,8 +21,8 @@ install:
   - ps: Set-Content ./ShipStation4Net.Tests/configuration.json $env:auth
   - cmd: dotnet --version
   - cmd: dotnet restore ./ShipStation4Net/ShipStation4Net.csproj --verbosity m
-  - cmd: dotnet build ./ShipStation4Net/ShipStation4Net.csproj /p:configuration=Release
 test_script:
+  - cmd: dotnet build ./ShipStation4Net/ShipStation4Net.csproj /p:configuration=Release
   - cmd: dotnet restore ./ShipStation4Net.Tests/ShipStation4Net.Tests.csproj --verbosity m
   - cmd: cd ShipStation4Net.Tests
   - cmd: dotnet test
