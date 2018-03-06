@@ -27,6 +27,7 @@ test_script:
   - cmd: cd ShipStation4Net.Tests
   - cmd: dotnet test
 after_test:
+  - cmd: cd ..
   - cmd: dotnet pack ./ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release
 build:
   publish_nuget: true
