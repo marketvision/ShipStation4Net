@@ -8,7 +8,7 @@ init:
 clone_depth: 1
 dotnet_csproj:
   patch: true
-  file: ./ShipStation4Net/ShipStation4Net.csproj
+  file: './ShipStation4Net/ShipStation4Net.csproj'
   version: '{version}'
   package_version: '{version}'
   assembly_version: '{version}'
