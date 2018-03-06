@@ -5,23 +5,30 @@ branches:
   - master
 init:
   - cmd: git config --global core.autocrlf true
+dotnet_csproj:
+  patch: true
+  file: ./ShipStation4Net/ShipStation4Net.csproj
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 environment:
   auth:
     secure: uERP0DBsU76Ftc3PyuHsOko4tVg5EakpBoJkT4s+T89xEiluSj1HRHt45zUuhiH7UaZKzPkU5U0I5uImh8s9yOVFBLSGx1cma+a1j6uRBenRe3eFeMqYWd3cIg1zDka1
 install:
   - ps: Set-Content ./ShipStation4Net.Tests/configuration.json $env:auth
-  # Display .NET Core version
   - cmd: dotnet --version
-  # Display minimal restore text
   - cmd: dotnet restore ./ShipStation4Net/ShipStation4Net.csproj --verbosity m
-  # Build the project
-  - cmd: dotnet build ./ShipStation4Net/ShipStation4Net.csproj /p:configuration=Release /p:PackageVersion:{version}
+  - cmd: dotnet build ./ShipStation4Net/ShipStation4Net.csproj /p:configuration=Release
 test_script:
-  # restore packages for our unit tests
   - cmd: dotnet restore ./ShipStation4Net.Tests/ShipStation4Net.Tests.csproj --verbosity m
-  # run the unit tests (requires changing into the test directory)
   - cmd: cd ShipStation4Net.Tests
   - cmd: dotnet test
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  verbosity: minimal
 build_script:
   - cmd: dotnet pack ./ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release 
 artifacts:
@@ -30,4 +37,11 @@ artifacts:
 clone_depth: 1
 on_finish :
   # any cleanup in here
-deploy: on
+artifacts:
+- path: ./ShipStation4Net/bin/Release/
+  name: ShipStation AppVeyor
+deploy:
+- provider: NuGet
+  api_key:
+    secure: Gn7F8jnVscRU3L1TRfztdLZZ5PixsGlgONO/grADou0o4xg2i8TL26Gg1E3vmZK2
+  artifact: ShipStation4Net/bin/Release/ShipStation4Net*.nupkg
