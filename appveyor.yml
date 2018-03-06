@@ -5,6 +5,7 @@ branches:
   - master
 init:
   - cmd: git config --global core.autocrlf true
+clone_depth: 1
 dotnet_csproj:
   patch: true
   file: ./ShipStation4Net/ShipStation4Net.csproj
@@ -34,12 +35,6 @@ build_script:
 artifacts:
  - path: './ShipStation4Net/bin/Release/ShipStation4Net*.nupkg'
    name: Nuget
-clone_depth: 1
-on_finish :
-  # any cleanup in here
-artifacts:
-- path: ./ShipStation4Net/bin/Release/
-  name: ShipStation AppVeyor
 deploy:
 - provider: NuGet
   api_key:
