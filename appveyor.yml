@@ -25,9 +25,8 @@ test_script:
 build_script:
   - cmd: dotnet pack ./ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release 
 artifacts:
- - path: './ShipStation4Net/bin/Release/'
-   name: ShipStation4Net
-   type: Auto
+ - path: './ShipStation4Net/bin/Release/ShipStation4Net*.nupkg'
+   name: Nuget
 clone_depth: 1
 on_finish :
   # any cleanup in here
