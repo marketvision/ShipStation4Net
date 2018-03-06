@@ -8,7 +8,7 @@ init:
 clone_depth: 1
 dotnet_csproj:
   patch: true
-  file: './ShipStation4Net/ShipStation4Net.csproj'
+  file: '**/*.csproj'
   version: '{version}'
   package_version: '{version}'
   assembly_version: '{version}'
@@ -30,7 +30,7 @@ build:
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
-build_script:
+on_success:
   - cmd: dotnet pack ./ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release 
 artifacts:
  - path: './ShipStation4Net/bin/Release/ShipStation4Net*.nupkg'
