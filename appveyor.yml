@@ -26,15 +26,14 @@ test_script:
   - cmd: dotnet build ./ShipStation4Net/ShipStation4Net.csproj /p:configuration=Release
   - cmd: cd ShipStation4Net.Tests
   - cmd: dotnet test
+after_test:
+  - cmd: dotnet pack ./ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release
 build:
   publish_nuget: true
   publish_nuget_symbols: true
   verbosity: minimal
-on_success:
-  - cmd: cd ..
-  - cmd: dotnet pack ./ShipStation4Net/ShipStation4Net.csproj /p:Configuration=Release 
 deploy:
-- provider: NuGet
-  api_key:
-    secure: Gn7F8jnVscRU3L1TRfztdLZZ5PixsGlgONO/grADou0o4xg2i8TL26Gg1E3vmZK2
-  artifact: ShipStation4Net/bin/Release/ShipStation4Net*.nupkg
+  - provider: NuGet
+    api_key:
+      secure: Gn7F8jnVscRU3L1TRfztdLZZ5PixsGlgONO/grADou0o4xg2i8TL26Gg1E3vmZK2
+    artifact: ./ShipStation4Net/bin/Release/ShipStation4Net*.nupkg
