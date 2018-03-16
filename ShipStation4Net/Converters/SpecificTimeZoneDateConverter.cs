@@ -19,6 +19,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.Linq;
 
 namespace ShipStation4Net.Converters
 {
@@ -46,7 +47,7 @@ namespace ShipStation4Net.Converters
 			}
 
 			var value = DateTime.Parse(Convert.ToString(reader.Value));
-			return TimeZoneInfo.ConvertTime(value, _timeZoneInfo, TimeZoneInfo.Local);
+			return ConvertTimeWithAmbiguousTimeHandling(value, _timeZoneInfo, TimeZoneInfo.Utc);
 		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -59,10 +60,26 @@ namespace ShipStation4Net.Converters
 			}
 
 			var sourceTimeZone = val.Kind == DateTimeKind.Utc ? TimeZoneInfo.Utc : TimeZoneInfo.Local;
-			val = TimeZoneInfo.ConvertTime(val, sourceTimeZone, _timeZoneInfo);
+			val = ConvertTimeWithAmbiguousTimeHandling(val, sourceTimeZone, _timeZoneInfo);
 
 			writer.WriteValue(val.ToString(_dateFormat));
 			writer.Flush();
+		}
+
+		private static DateTime ConvertTimeWithAmbiguousTimeHandling(DateTime val, TimeZoneInfo sourceTimeZone, TimeZoneInfo destinationTimeZone)
+		{
+			if (!sourceTimeZone.IsInvalidTime(val))
+			{
+				return TimeZoneInfo.ConvertTime(val, sourceTimeZone, destinationTimeZone);
+			}
+
+			//because ShipStation operates in PST/PDT: it's still possible to have ambiguous datetime even if client sends/receives data in UTC
+			var ambiguousTimeRule = sourceTimeZone.GetAdjustmentRules()
+				.First(x => x.DateStart <= val && val <= x.DateEnd);
+
+			val = val.Add(new TimeSpan(-ambiguousTimeRule.DaylightDelta.Ticks));
+			val = TimeZoneInfo.ConvertTime(val, sourceTimeZone, destinationTimeZone);
+			return val.Add(ambiguousTimeRule.DaylightDelta);
 		}
 	}
 }

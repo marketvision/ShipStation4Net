@@ -36,6 +36,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ShipStation4Net
@@ -212,12 +213,14 @@ namespace ShipStation4Net
 
 		private async Task<IRestResponse<T>> ExecuteRequest<T>(HttpRequestMessage message)
 		{
-			var credentials = new NetworkCredential(Configuration.UserName, Configuration.UserApiKey);
-			var handler = new HttpClientHandler { Credentials = credentials };
 			IRestResponse<T> response;
 
-			using (var client = new HttpClient(handler))
+			using (var client = new HttpClient())
 			{
+				//set basic authorization explicitly (which prevents additional extra call each time that ends up with 401 error)
+				var byteArray = Encoding.UTF8.GetBytes($"{Configuration.UserName}:{Configuration.UserApiKey}");
+				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+				
 				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 				client.BaseAddress = Configuration.BaseUri;
 

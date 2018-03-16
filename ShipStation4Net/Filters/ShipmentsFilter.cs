@@ -63,37 +63,37 @@ namespace ShipStation4Net.Filters
         /// Returns shipments created on or after the specified createDate
         /// Example: 2015-01-01 00:00:00. 
         /// </summary>
-        public DateTime CreateDateStart { get; set; }
+        public DateTime? CreateDateStart { get; set; }
 
         /// <summary>
         /// Returns shipments created on or before the specified createDate
         /// Example: 2015-01-08 00:00:00. 
         /// </summary>
-        public DateTime CreateDateEnd { get; set; }
+        public DateTime? CreateDateEnd { get; set; }
 
         /// <summary>
         /// Returns shipments with the shipDate on or after the specified date
         /// Example: 2015-01-01. 
         /// </summary>
-        public DateTime ShipDateStart { get; set; }
+        public DateTime? ShipDateStart { get; set; }
 
         /// <summary>
         /// Returns shipments with the shipDate on or before the specified date
         /// Example: 2015-01-08. 
         /// </summary>
-        public DateTime ShipDateEnd { get; set; }
+        public DateTime? ShipDateEnd { get; set; }
 
         /// <summary>
         /// Returns shipments voided on or after the specified date
         /// Example: 2015-01-01 00:00:00. 
         /// </summary>
-        public DateTime VoidDateStart { get; set; }
+        public DateTime? VoidDateStart { get; set; }
 
         /// <summary>
         /// Returns shipments voided on or before the specified date
         /// Example: 2015-01-08 00:00:00. 
         /// </summary>
-        public DateTime VoidDateEnd { get; set; }
+        public DateTime? VoidDateEnd { get; set; }
 
         /// <summary>
         /// Specifies whether to include shipment items with results Default value: false.
