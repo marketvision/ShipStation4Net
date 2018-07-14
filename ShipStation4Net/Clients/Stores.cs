@@ -72,32 +72,43 @@ namespace ShipStation4Net.Clients
                 filter += "marketplaceId=" + marketplaceId.Value.ToString();
             }
             return GetDataAsync<IList<Store>>(filter);
-        }
+		}
 
-        /// <summary>
-        /// Retrieves the refresh status of a given store. 
-        /// </summary>
-        /// <param name="storeId">
-        /// Specifies the store whose status will be retrieved.
-        /// Example: 12345.</param>
-        /// <returns>A response containing details regarding the store refresh status.</returns>
-        public Task<StoreRefreshStatusResponse> GetStoreRefreshStatusAsync(int storeId)
+		/// <summary>
+		/// Retrieves the refresh status of a given store. 
+		/// </summary>
+		/// <param name="storeId">
+		/// Specifies the store whose status will be retrieved.
+		/// Example: 12345.</param>
+		/// <returns>A response containing details regarding the store refresh status.</returns>
+		public Task<StoreRefreshStatusResponse> GetStoreRefreshStatusAsync(int storeId)
         {
             return GetDataAsync<StoreRefreshStatusResponse>($"getrefreshstatus?storeId={storeId}");
-        }
+		}
 
-        /// <summary>
-        /// Initiates a store refresh.
-        /// </summary>
-        /// <param name="storeId">
-        /// Specifies the store which will get refreshed.If the storeId is not specified, a store refresh will be initiated for all 
-        /// refreshable stores on that account.
-        /// </param>
-        /// <param name="refreshDate">
-        /// Specifies the starting date for new order imports.If the refreshDate is not specified, ShipStation will use the last recorded refreshDate for that store.
-        /// </param>
-        /// <returns>A response indicating the success status of the refresh.</returns>
-        public async Task<bool> RefreshStoreAsync(int storeId, DateTime refreshDate)
+		/// <summary>
+		/// Initiates store refresh for all stores on account.
+		/// </summary>
+		/// <returns></returns>
+		public async Task<bool> RefreshAllStoresAsync()
+		{
+			var response = await PostDataAsync<JObject, SuccessResponse>("refreshstore", new JObject());
+
+			return response.Success;
+		}
+
+		/// <summary>
+		/// Initiates a store refresh.
+		/// </summary>
+		/// <param name="storeId">
+		/// Specifies the store which will get refreshed.If the storeId is not specified, a store refresh will be initiated for all 
+		/// refreshable stores on that account.
+		/// </param>
+		/// <param name="refreshDate">
+		/// Specifies the starting date for new order imports.If the refreshDate is not specified, ShipStation will use the last recorded refreshDate for that store.
+		/// </param>
+		/// <returns>A response indicating the success status of the refresh.</returns>
+		public async Task<bool> RefreshStoreAsync(int storeId, DateTime refreshDate)
         {
             var refreshStoreRequest = new JObject();
             refreshStoreRequest["storeId"] = storeId;
