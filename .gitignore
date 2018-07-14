@@ -293,3 +293,4 @@ __pycache__/
 
 # Directories which start with '.'
 **/.*/
+/nuget.exe

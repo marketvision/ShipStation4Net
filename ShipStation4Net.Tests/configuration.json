@@ -1,0 +1,5 @@
+{
+    "UserName": "<required | your username>",
+    "UserApiKey": "<required | your password>",
+    "PartnerId": "<optional | your partner id if you have purchased a higher rate limit>"
+}
