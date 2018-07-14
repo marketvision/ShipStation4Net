@@ -20,14 +20,10 @@
     <AssemblyVersion>0.10.1.31</AssemblyVersion>
     <FileVersion>0.10.1.31</FileVersion>
     <RepositoryType>Git</RepositoryType>
-    <PackageReleaseNotes>Updated readme
-
-Hardcoded test data into tests
-Removed results from tests
-
-Major change to converge paginated results into one type
-
-Increment build number</PackageReleaseNotes>
+    <PackageReleaseNotes>
+#### 0.10.70 - 13.07.2018
+* Added Stores.RefreshAllStoresAsync method on client
+	</PackageReleaseNotes>
     <PackageTags>.NET Standard, Client, Shipping, ShipStation, REST</PackageTags>
   </PropertyGroup>
  
