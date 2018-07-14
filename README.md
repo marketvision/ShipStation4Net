@@ -1,7 +1,7 @@
 # ShipStation4Net
 A .NET Standard Library using System.Net.HttpClient and NewtonSoft.Json which provides access to the ShipStation API.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/u3qj2igpmxepnuoe/branch/master?svg=true)](https://ci.appveyor.com/project/nla-brandonjames/shipstation4net/branch/master)
+![Build status](https://marketvision.visualstudio.com/_apis/public/build/definitions/74193216-87c1-4a03-863c-b74f60c8975c/162/badge)
 
 ## Testing
 The ShipStation API Credentials are ignored by the `.gitignore` file. Its name is `configuration.json`. You should create a new configuration file in the json format with the following key value pairs as they are read by Json.Net into the Configuration object:
