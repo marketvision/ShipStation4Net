@@ -35,8 +35,7 @@ namespace ShipStation4Net.Tests
 
             Assert.True(stores.Count > 0);
         }
-
-        [Fact]
+		[Fact]
         public async void TestGetStoreByMarketplaceAsync()
         {
             var stores = await Client.Stores.GetItemsAsync(false, testMarketplaceId) as List<Store>;
@@ -44,7 +43,16 @@ namespace ShipStation4Net.Tests
             Assert.True(stores.Count > 0);
         }
 
-        [Fact]
+
+		[Fact]
+		public async void TestGetRefreshAllStoresAsync()
+		{
+			var stores = await Client.Stores.RefreshAllStoresAsync();
+
+			Assert.True(stores);
+		}
+
+		[Fact]
         public async void TestGetStoreRefreshStatusAsync()
         {
             var refreshStatus = await Client.Stores.GetStoreRefreshStatusAsync(testStoreId);
