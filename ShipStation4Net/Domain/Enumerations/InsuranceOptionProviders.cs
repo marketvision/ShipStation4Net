@@ -29,6 +29,9 @@ namespace ShipStation4Net.Domain.Enumerations
         Shipsurance = 0,
 
         [EnumMember(Value = "carrier")]
-        Carrier = 1
+        Carrier = 1,
+
+        [EnumMember(Value = "provider")]
+        Provider = 2,
     }
 }
