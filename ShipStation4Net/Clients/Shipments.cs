@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Shipments : ClientBase, IGetsPaginatedResponses<Shipment>
+    public class Shipments : ClientBase, IGetsPaginatedResponses<Shipment>,  IGetsResourceUrlResponses<Shipment>
     {
         public Shipments(Configuration configuration) : base(configuration)
         {
@@ -121,6 +121,18 @@ namespace ShipStation4Net.Clients
             var response = await PostDataAsync<JObject, SuccessResponse>("voidlabel", voidLabelRequest).ConfigureAwait(false);
 
             return response.Success;
+        }
+
+        /// <summary>
+        /// Takes the resourceURL of a SHIP_NOTIFY or ITEM_SHIP_NOTIFY and retrieves the list of Shipments
+        /// </summary>
+        /// <see cref="https://help.shipstation.com/hc/en-us/articles/360025856252-ShipStation-Webhooks"/>
+        /// <param name="resourceUrl">The full url based via the webhook</param>
+        /// <returns></returns>
+        public async Task<IList<Shipment>> GetResourceResponse(string resourceUrl)
+        {
+            var response = await GetDataAsync<IList<Shipment>>(resourceUrl).ConfigureAwait(false);
+            return response;
         }
     }
 }

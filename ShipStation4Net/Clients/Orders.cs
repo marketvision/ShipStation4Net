@@ -28,8 +28,8 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-	public class Orders : ClientBase, IGetsPaginatedResponses<Order>, ICreates<Order>, IGets<Order>
-	{
+	public class Orders : ClientBase, IGetsPaginatedResponses<Order>, ICreates<Order>, IGets<Order>, IGetsResourceUrlResponses<Order>
+    {
 		public Orders(Configuration configuration) : base(configuration)
 		{
 			BaseUri = "orders";
@@ -306,5 +306,17 @@ namespace ShipStation4Net.Clients
 			var response = await PostDataAsync<JObject, SuccessResponse>("unassignuser", unassignUserRequest).ConfigureAwait(false);
 			return response.Success;
 		}
-	}
+
+        /// <summary>
+        /// Takes the resourceURL of a ORDER_NOTIFY or ITEM_ORDER_NOTIFY and retrieves the list of Orders
+        /// </summary>
+        /// <param name="resourceUrl">The full url based via the webhook</param>
+        /// <see cref="https://help.shipstation.com/hc/en-us/articles/360025856252-ShipStation-Webhooks"/>
+        /// <returns></returns>
+        public async Task<IList<Order>> GetResourceResponse(string resourceUrl)
+        {
+            var response = await GetDataAsync<IList<Order>>(resourceUrl).ConfigureAwait(false);
+            return response;
+        }
+    }
 }
