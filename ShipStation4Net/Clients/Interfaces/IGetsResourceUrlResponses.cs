@@ -7,6 +7,6 @@ namespace ShipStation4Net.Clients.Interfaces
 {
     internal interface IGetsResourceUrlResponses<T>
     {
-        Task<IList<T>> GetResourceResponse(string resourceUrl);
+        Task<IList<T>> GetResourceResponseAsync(string resourceUrl);
     }
 }

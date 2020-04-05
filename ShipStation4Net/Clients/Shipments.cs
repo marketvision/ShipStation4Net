@@ -129,7 +129,7 @@ namespace ShipStation4Net.Clients
         /// <see cref="https://help.shipstation.com/hc/en-us/articles/360025856252-ShipStation-Webhooks"/>
         /// <param name="resourceUrl">The full url based via the webhook</param>
         /// <returns></returns>
-        public async Task<IList<Shipment>> GetResourceResponse(string resourceUrl)
+        public async Task<IList<Shipment>> GetResourceResponseAsync(string resourceUrl)
         {
             var response = await GetDataAsync<IList<Shipment>>(resourceUrl).ConfigureAwait(false);
             return response;
