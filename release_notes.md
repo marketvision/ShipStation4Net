@@ -1,3 +1,6 @@
+#### 0.10.73 - 05.04.2020
+* Added support for retreving webhook payloads
+
 #### 0.10.72 - 07.11.2019
 * Added "provider" to InsuranceOptionProviders enum
 

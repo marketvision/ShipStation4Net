@@ -43,24 +43,28 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="filter">The ShipmentsFilter</param>
         /// <returns>A list of shipments that match the specified criteria.</returns>
-        public async Task<IList<Shipment>> GetAllPagesAsync(IFilter filter)
+        public Task<IList<Shipment>> GetAllPagesAsync(IFilter filter = null)
+        {
+            return GetAllPagesAsync(filter, "");
+
+        }
+        private async Task<IList<Shipment>> GetAllPagesAsync(IFilter filter, string resourceUrl)
         {
             var items = new List<Shipment>();
             filter = filter ?? new ShipmentsFilter();
 
-            var pageOne = await GetDataAsync<PaginatedResponse<Shipment>>((ShipmentsFilter)filter).ConfigureAwait(false);
+            var pageOne = await GetDataAsync<PaginatedResponse<Shipment>>(resourceUrl, (ShipmentsFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
             if (pageOne.Pages > 1)
             {
-                items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, (ShipmentsFilter)filter).ConfigureAwait(false));
+                items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, (ShipmentsFilter)filter, resourceUrl).ConfigureAwait(false));
             }
 
             return items;
         }
-
         public Task<IList<Shipment>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null)
         {
-            return this.GetPageAsync(page, pageSize, filter, "");
+            return GetPageAsync(page, pageSize, filter, "");
         }
         private async Task<IList<Shipment>> GetPageAsync(int page, int pageSize, IFilter filter, string resourceUrl)
         {
@@ -80,7 +84,6 @@ namespace ShipStation4Net.Clients
         {
             return GetPageRangeAsync(start, end, pageSize, filter, "");
         }
-
         private async Task<IList<Shipment>> GetPageRangeAsync(int start, int end, int pageSize, IFilter filter, string resourceUrl)
         {
             if (start < 1) throw new ArgumentException(nameof(start), "Cannot be a negative or zero");
@@ -138,22 +141,9 @@ namespace ShipStation4Net.Clients
         /// <see cref="https://help.shipstation.com/hc/en-us/articles/360025856252-ShipStation-Webhooks"/>
         /// <param name="resourceUrl">The full url based via the webhook</param>
         /// <returns></returns>
-        public async Task<IList<Shipment>> GetResourceResponsesAsync(string resourceUrl)
+        public Task<IList<Shipment>> GetResourceResponsesAsync(string resourceUrl)
         {
-
-
-            var items = new List<Shipment>();
-            var filter = new ShipmentsFilter();
-
-            var pageOne = await GetDataAsync<PaginatedResponse<Shipment>>(resourceUrl, (ShipmentsFilter)filter).ConfigureAwait(false);
-            items.AddRange(pageOne.Items);
-            if (pageOne.Pages > 1)
-            {
-                items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, (ShipmentsFilter)filter, resourceUrl).ConfigureAwait(false));
-            }
-
-
-            return items;
+            return GetAllPagesAsync(null, resourceUrl);
         }
     }
 }

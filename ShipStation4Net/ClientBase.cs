@@ -125,9 +125,14 @@ namespace ShipStation4Net
 
 		protected async Task<T> GetDataAsync<T>(string resourceEndpoint, IFilter filter = null)
 		{
-            
+            if(resourceEndpoint == null)
+            {
+                resourceEndpoint = "";
+            }
+
 			var endpoint = (string.IsNullOrEmpty(resourceEndpoint)) ? BaseUri : string.Format("{0}/{1}", BaseUri, resourceEndpoint);
-			// If you are supplying the filters yourself 
+
+            // If you are supplying the filters yourself
 			if (resourceEndpoint.StartsWith("?") || resourceEndpoint.Contains("/"))
 			{
 				endpoint = string.Format("{0}{1}", BaseUri, resourceEndpoint);
