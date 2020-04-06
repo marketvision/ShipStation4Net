@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Shipments : ClientBase, IGetsPaginatedResponses<Shipment>
+    public class Shipments : ClientBase, IGetsPaginatedResponses<Shipment>, IGetsResourceUrlResponses<Shipment>
     {
         public Shipments(Configuration configuration) : base(configuration)
         {
@@ -50,15 +50,19 @@ namespace ShipStation4Net.Clients
 
             var pageOne = await GetDataAsync<PaginatedResponse<Shipment>>((ShipmentsFilter)filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items);
-			if (pageOne.Pages > 1)
-			{
-				items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, (ShipmentsFilter)filter).ConfigureAwait(false));
-			}
+            if (pageOne.Pages > 1)
+            {
+                items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, (ShipmentsFilter)filter).ConfigureAwait(false));
+            }
 
             return items;
         }
 
-        public async Task<IList<Shipment>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null)
+        public Task<IList<Shipment>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null)
+        {
+            return this.GetPageAsync(page, pageSize, filter, "");
+        }
+        private async Task<IList<Shipment>> GetPageAsync(int page, int pageSize, IFilter filter, string resourceUrl)
         {
             if (page < 1) throw new ArgumentException(nameof(page), "Cannot be a negative or zero");
             if (pageSize < 1 || pageSize > 500) throw new ArgumentOutOfRangeException(nameof(pageSize), "Should be in range 1..500");
@@ -68,11 +72,16 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<PaginatedResponse<Shipment>>((ShipmentsFilter)filter).ConfigureAwait(false);
+            var response = await GetDataAsync<PaginatedResponse<Shipment>>(resourceUrl, (ShipmentsFilter)filter).ConfigureAwait(false);
             return response.Items;
         }
 
-        public async Task<IList<Shipment>> GetPageRangeAsync(int start, int end, int pageSize = 100, IFilter filter = null)
+        public Task<IList<Shipment>> GetPageRangeAsync(int start, int end, int pageSize = 100, IFilter filter = null)
+        {
+            return GetPageRangeAsync(start, end, pageSize, filter, "");
+        }
+
+        private async Task<IList<Shipment>> GetPageRangeAsync(int start, int end, int pageSize, IFilter filter, string resourceUrl)
         {
             if (start < 1) throw new ArgumentException(nameof(start), "Cannot be a negative or zero");
             if (start > end) throw new ArgumentException(nameof(end), "Invalid page range");
@@ -82,7 +91,7 @@ namespace ShipStation4Net.Clients
 
             for (int i = start; i <= end; i++)
             {
-                items.AddRange(await GetPageAsync(i, pageSize, (ShipmentsFilter)filter).ConfigureAwait(false));
+                items.AddRange(await GetPageAsync(i, pageSize, (ShipmentsFilter)filter, resourceUrl).ConfigureAwait(false));
             }
             return items;
         }
@@ -121,6 +130,30 @@ namespace ShipStation4Net.Clients
             var response = await PostDataAsync<JObject, SuccessResponse>("voidlabel", voidLabelRequest).ConfigureAwait(false);
 
             return response.Success;
+        }
+
+        /// <summary>
+        /// Takes the resourceURL of a SHIP_NOTIFY or ITEM_SHIP_NOTIFY and retrieves the list of Shipments
+        /// </summary>
+        /// <see cref="https://help.shipstation.com/hc/en-us/articles/360025856252-ShipStation-Webhooks"/>
+        /// <param name="resourceUrl">The full url based via the webhook</param>
+        /// <returns></returns>
+        public async Task<IList<Shipment>> GetResourceResponsesAsync(string resourceUrl)
+        {
+
+
+            var items = new List<Shipment>();
+            var filter = new ShipmentsFilter();
+
+            var pageOne = await GetDataAsync<PaginatedResponse<Shipment>>(resourceUrl, (ShipmentsFilter)filter).ConfigureAwait(false);
+            items.AddRange(pageOne.Items);
+            if (pageOne.Pages > 1)
+            {
+                items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, (ShipmentsFilter)filter, resourceUrl).ConfigureAwait(false));
+            }
+
+
+            return items;
         }
     }
 }
