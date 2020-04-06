@@ -125,12 +125,19 @@ namespace ShipStation4Net
 
 		protected async Task<T> GetDataAsync<T>(string resourceEndpoint, IFilter filter = null)
 		{
+            
 			var endpoint = (string.IsNullOrEmpty(resourceEndpoint)) ? BaseUri : string.Format("{0}/{1}", BaseUri, resourceEndpoint);
 			// If you are supplying the filters yourself 
 			if (resourceEndpoint.StartsWith("?") || resourceEndpoint.Contains("/"))
 			{
 				endpoint = string.Format("{0}{1}", BaseUri, resourceEndpoint);
 			}
+
+            if (resourceEndpoint.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ||
+                resourceEndpoint.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+            {
+                endpoint = resourceEndpoint;
+            }
 
 			var response = await RetryPolicy.ExecuteAction(() =>
 			{
@@ -142,7 +149,6 @@ namespace ShipStation4Net
 				}
 
 				var uri = message.RequestUri.ToString();
-
 				var resp = ExecuteRequest<T>(message);
 				return resp;
 			}).ConfigureAwait(false);
