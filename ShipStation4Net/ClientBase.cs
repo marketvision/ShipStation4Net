@@ -75,7 +75,7 @@ namespace ShipStation4Net
 			var timezoneString = "Pacific Standard Time";
 
 #if NETSTANDARD2_0
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 timezoneString = "America/Los_Angeles";
             }
