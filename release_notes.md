@@ -1,3 +1,6 @@
+#### 0.10.74 - 30.04.2020
+* Fix time zone string for OSX
+
 #### 0.10.73 - 05.04.2020
 * Added support for retreving webhook payloads
 
