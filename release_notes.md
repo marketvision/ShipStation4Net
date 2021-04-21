@@ -1,3 +1,6 @@
+#### 0.10.75 - 21.04.2021
+* Updated System.Net.Http to 4.3.4
+
 #### 0.10.74 - 30.04.2020
 * Fix time zone string for OSX
 
