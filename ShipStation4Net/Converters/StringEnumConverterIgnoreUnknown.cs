@@ -1,6 +1,6 @@
 ﻿#region License
 /*
- * Copyright 2017 Brandon James
+ *  Copyright 2021 MarketVision, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,21 +17,24 @@
 #endregion
 
 using Newtonsoft.Json;
-using ShipStation4Net.Converters;
-using System.Runtime.Serialization;
+using Newtonsoft.Json.Converters;
+using System;
 
-namespace ShipStation4Net.Domain.Enumerations
+namespace ShipStation4Net.Converters
 {
-    [JsonConverter(typeof(StringEnumConverterIgnoreUnknown))]
-    public enum WeightUnits
+    public class StringEnumConverterIgnoreUnknown : StringEnumConverter
     {
-        [EnumMember(Value = "pounds")]
-        Pounds = 0,
-        
-        [EnumMember(Value = "ounces")]
-        Ounces = 1,
-
-        [EnumMember(Value = "grams")]
-        Grams = 2
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            try
+            {
+                return base.ReadJson(reader, objectType, existingValue, serializer);
+            }
+            catch
+            {
+                //use default if ReadJson throws exception
+                return Activator.CreateInstance(objectType);
+            }
+        }
     }
 }

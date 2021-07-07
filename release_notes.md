@@ -1,3 +1,6 @@
+#### 0.10.76 - 07.07.2021
+* Fixed issue with deserialization when ShipStation returns weight in inches - ignore weight units that are not expected
+
 #### 0.10.75 - 21.04.2021
 * Updated System.Net.Http to 4.3.4
 
