@@ -69,7 +69,7 @@ begin {
             Set-Content -Path 'ShipStation4Net/ShipStation4Net.csproj' -Value $newProjectFile
 
             #generate new package 
-            dotnet pack ./ShipStation4Net/ShipStation4Net.csproj --output "../.nupkg" /p:Configuration=Release /p:PackageVersion=$releaseVersion
+            dotnet pack ./ShipStation4Net/ShipStation4Net.csproj --output ".nupkg" /p:Configuration=Release /p:PackageVersion=$releaseVersion
         
             .\nuget.exe push ".nupkg/ShipStation4Net.$releaseVersion.nupkg" $nugetKey -Source https://api.nuget.org/v3/index.json
             git tag -a $releaseVersion -m "Version $releaseVersion was pushed to nuget feed" > $null
