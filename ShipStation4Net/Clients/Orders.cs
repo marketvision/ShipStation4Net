@@ -24,11 +24,12 @@ using ShipStation4Net.Filters;
 using ShipStation4Net.Responses;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Orders : ClientBase, IGetsPaginatedResponses<Order>, ICreates<Order>, IGets<Order>, IGetsResourceUrlResponses<Order>
+    public class Orders : ClientBase, IGetsPaginatedResponses<Order, OrdersFilter>, ICreates<Order>, IGets<Order>, IGetsResourceUrlResponses<Order>, IDeletes<Order>
     {
         public Orders(Configuration configuration) : base(configuration)
         {
@@ -41,18 +42,18 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="filter">An OrdersFilter</param>
         /// <returns>A list of order pages filtered by the supplied parameters.</returns>
-        public IEnumerable<IEnumerable<Order>> GetAllPages(IFilter filter = null)
+        public IEnumerable<IEnumerable<Order>> GetAllPages(OrdersFilter filter = null)
         {
             var items = new List<Order>();
             filter = filter ?? new OrdersFilter();
 
-            var pageOne = GetDataAsync<PaginatedResponse<Order>>((OrdersFilter)filter).Result;
+            var pageOne = GetDataAsync<PaginatedResponse<Order>>(filter).Result;
 
             yield return pageOne.Items;
 
             for (int i = 2; i <= pageOne.Pages; i++)
             {
-                var currentPage = GetPageAsync(i, filter.PageSize, (OrdersFilter)filter).Result;
+                var currentPage = GetPageAsync(i, filter.PageSize, filter).Result;
                 yield return currentPage;
             }
         }
@@ -63,16 +64,16 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="filter">An OrdersFilter</param>
         /// <returns>A list of orders filtered by the supplied parameters.</returns>
-        public Task<IList<Order>> GetAllPagesAsync(IFilter filter = null)
+        public Task<IList<Order>> GetAllPagesAsync(OrdersFilter filter = null)
         {
             return GetAllPagesAsync(filter, "");
         }
-        private async Task<IList<Order>> GetAllPagesAsync(IFilter filter, string resourceUrl)
+        private async Task<IList<Order>> GetAllPagesAsync(OrdersFilter filter, string resourceUrl)
         {
             var items = new List<Order>();
             filter = filter ?? new OrdersFilter();
 
-            var pageOne = await GetDataAsync<PaginatedResponse<Order>>(resourceUrl, (OrdersFilter)filter).ConfigureAwait(false);
+            var pageOne = await GetDataAsync<PaginatedResponse<Order>>(resourceUrl, filter).ConfigureAwait(false);
             items.AddRange(pageOne.Items as List<Order>);
             if (pageOne.Pages > 1)
             {
@@ -82,11 +83,11 @@ namespace ShipStation4Net.Clients
             return items;
         }
 
-        public Task<IList<Order>> GetPageRangeAsync(int start, int end, int pageSize = 100, IFilter filter = null)
+        public Task<IList<Order>> GetPageRangeAsync(int start, int end, int pageSize = 100, OrdersFilter filter = null)
         {
             return GetPageRangeAsync(start, end, pageSize, filter, "");
         }
-        private async Task<IList<Order>> GetPageRangeAsync(int start, int end, int pageSize, IFilter filter, string resourceUrl)
+        private async Task<IList<Order>> GetPageRangeAsync(int start, int end, int pageSize, OrdersFilter filter, string resourceUrl)
         {
             if (start < 1) throw new ArgumentException(nameof(start), "Cannot be a negative or zero");
             if (start > end) throw new ArgumentException(nameof(end), "Invalid page range");
@@ -96,16 +97,16 @@ namespace ShipStation4Net.Clients
 
             for (int i = start; i <= end; i++)
             {
-                items.AddRange(await GetPageAsync(i, pageSize, (OrdersFilter)filter, resourceUrl).ConfigureAwait(false));
+                items.AddRange(await GetPageAsync(i, pageSize, filter, resourceUrl).ConfigureAwait(false));
             }
             return items;
         }
 
-        public Task<IList<Order>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null)
+        public Task<IList<Order>> GetPageAsync(int page, int pageSize = 100, OrdersFilter filter = null)
         {
             return GetPageAsync(page, pageSize, filter, "");
         }
-        private async Task<IList<Order>> GetPageAsync(int page, int pageSize, IFilter filter, string resourceUrl)
+        private async Task<IList<Order>> GetPageAsync(int page, int pageSize, OrdersFilter filter, string resourceUrl)
         {
             if (page < 1) throw new ArgumentException(nameof(page), "Cannot be a negative or zero");
             if (pageSize < 1 || pageSize > 500) throw new ArgumentOutOfRangeException(nameof(pageSize), "Should be in range 1..500");
@@ -115,7 +116,7 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<PaginatedResponse<Order>>(resourceUrl, (OrdersFilter)filter).ConfigureAwait(false);
+            var response = await GetDataAsync<PaginatedResponse<Order>>(resourceUrl, filter).ConfigureAwait(false);
             return response.Items;
         }
 
@@ -133,6 +134,33 @@ namespace ShipStation4Net.Clients
                 throw new ArgumentException("Order Number cannot exceed 50 symbols. Shipstation will truncate it without error", nameof(newItem));
             }
             return PostDataAsync("createorder", newItem);
+        }
+
+        /// <summary>
+        /// This endpoint can be used to create or update multiple orders in one request. If the orderKey is specified, ShipStation will
+        /// attempt to locate the order with the specified orderKey. If found, the existing order with that key will be updated. If the
+        /// orderKey is not found, a new order will be created with that orderKey.
+        ///
+        /// For split orders, the orderKey is always required when creating or updating orders, and the orderId is always required for updates.
+        /// 
+        /// This call does not currently support partial updates; the entire resource must be provided in the body of the request.
+        /// </summary>
+        /// <param name="newItems">A newly created orders (maximum of 100 per request)</param>
+        /// <returns></returns>
+        public Task<UpdateMultipleOrdersResponse> CreateAsync(IList<Order> newItems)
+        {
+            if (newItems == null || newItems.Count == 0 || newItems.Count > 100)
+            {
+                throw new ArgumentException("Can only send up to 100 orders in bulk create/update", nameof(newItems));
+            }
+
+            var orderWithInvalidOrderNumber = newItems.FirstOrDefault(x => x.OrderNumber != null && x.OrderNumber.Length > 50);
+            if (orderWithInvalidOrderNumber != null)
+            {
+                throw new ArgumentException("Order Number cannot exceed 50 symbols. Shipstation will truncate it without error", nameof(orderWithInvalidOrderNumber.OrderNumber));
+            }
+
+            return PostDataAsync<IList<Order>, UpdateMultipleOrdersResponse>("createorders", newItems);
         }
 
         /// <summary>

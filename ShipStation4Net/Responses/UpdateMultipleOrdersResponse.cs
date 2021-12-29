@@ -17,18 +17,16 @@
 #endregion
 
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
-namespace ShipStation4Net.Domain.Entities
+namespace ShipStation4Net.Responses
 {
-    public class User
+    public class UpdateMultipleOrdersResponse
     {
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
+        [JsonProperty("hasErrors")]
+        public bool HasErrors { get; set; }
 
-        [JsonProperty("userName")]
-        public string UserName { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("results")]
+        public IList<UpdateMultipleOrdersResponseItem> Results { get; set; }
     }
 }

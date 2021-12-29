@@ -118,5 +118,8 @@ namespace ShipStation4Net.Domain.Entities
         /// </summary>
         [JsonProperty("billToCountryCode")]
         public string BillToCountryCode { get; set; }
+
+        [JsonProperty("billToMyOtherAccount")]
+        public string BillToMyOtherAccount { get; set; }
     }
 }

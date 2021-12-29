@@ -68,7 +68,7 @@ namespace ShipStation4Net.Clients
                 return _Customers;
             }
         }
-        
+
         private Fulfillments _Fulfillments;
 
         public Fulfillments Fulfillments
@@ -171,6 +171,21 @@ namespace ShipStation4Net.Clients
                 }
 
                 return _Warehouses;
+            }
+        }
+
+        private Webhooks _Webhooks;
+
+        public Webhooks Webhooks
+        {
+            get
+            {
+                if (_Webhooks == null)
+                {
+                    _Webhooks = new Webhooks(Configuration);
+                }
+
+                return _Webhooks;
             }
         }
 

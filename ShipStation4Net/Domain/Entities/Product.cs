@@ -113,7 +113,7 @@ namespace ShipStation4Net.Domain.Entities
         /// Specifies the product type. See our knowledge base here for more information on Product Types.
         /// </summary>
         [JsonProperty("productType")]
-        public object ProductType { get; set; }
+        public string ProductType { get; set; }
 
         /// <summary>
         /// The warehouse location associated with the product record.

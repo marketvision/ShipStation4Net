@@ -42,6 +42,14 @@ namespace ShipStation4Net.Domain.Entities
 
         [JsonProperty("balance")]
         public double? Balance { get; set; }
+
+        [JsonProperty("nickname")]
+        public string Nickname { get; set; }
+
+        [JsonProperty("shippingProviderId")]
+        public int? ShippingProviderId { get; set; }
+
+        [JsonProperty("primary")]
+        public bool? IsPrimary { get; set; }
     }
-    
 }

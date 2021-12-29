@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Users : ClientBase, IListsItems<User>
+    public class Users : ClientBase
     {
         public Users(Configuration configuration) : base(configuration)
         {
@@ -34,9 +34,10 @@ namespace ShipStation4Net.Clients
         /// A list of users.
         /// </summary>
         /// <returns>A list of users.</returns>
-        public Task<IList<User>> GetItemsAsync()
+        public Task<IList<User>> GetItemsAsync(bool showInactive = false)
         {
-            return GetDataAsync<IList<User>>();
+            var filter = (showInactive) ? "?showInactive=true" : "";
+            return GetDataAsync<IList<User>>(filter);
         }
     }
 }

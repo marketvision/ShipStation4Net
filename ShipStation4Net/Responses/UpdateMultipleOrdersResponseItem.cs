@@ -18,17 +18,23 @@
 
 using Newtonsoft.Json;
 
-namespace ShipStation4Net.Domain.Entities
+namespace ShipStation4Net.Responses
 {
-    public class User
+    public class UpdateMultipleOrdersResponseItem
     {
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
+        [JsonProperty("orderId")]
+        public int? OrderId { get; set; }
 
-        [JsonProperty("userName")]
-        public string UserName { get; set; }
+        [JsonProperty("orderNumber")]
+        public string OrderNumber { get; set; }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("orderKey")]
+        public string OrderKey { get; set; }
+
+        [JsonProperty("success")]
+        public bool Success { get; set; }
+
+        [JsonProperty("errorMessage")]
+        public string ErrorMessage { get; set; }
     }
 }

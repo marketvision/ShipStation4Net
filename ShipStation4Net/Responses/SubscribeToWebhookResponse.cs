@@ -18,17 +18,11 @@
 
 using Newtonsoft.Json;
 
-namespace ShipStation4Net.Domain.Entities
+namespace ShipStation4Net.Responses
 {
-    public class User
+    public class SubscribeToWebhookResponse
     {
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
-
-        [JsonProperty("userName")]
-        public string UserName { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("id")]
+        public int? Id { get; set; }
     }
 }

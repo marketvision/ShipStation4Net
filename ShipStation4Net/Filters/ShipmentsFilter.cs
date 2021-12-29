@@ -96,6 +96,11 @@ namespace ShipStation4Net.Filters
         public DateTime? VoidDateEnd { get; set; }
 
         /// <summary>
+        /// Returns shipments whose orders belong to the specified store ID.
+        /// </summary>
+        public int? StoreId { get; set; }
+
+        /// <summary>
         /// Specifies whether to include shipment items with results Default value: false.
         /// Example: false. 
         /// </summary>
@@ -129,6 +134,7 @@ namespace ShipStation4Net.Filters
             res["shipDateEnd"] = ShipDateEnd;
             res["voidDateStart"] = VoidDateStart;
             res["voidDateEnd"] = VoidDateEnd;
+            res["storeId"] = StoreId;
             res["includeShipmentItems"] = IncludeShipmentItems;
             res["sortBy"] = SortBy;
             res["sortDir"] = SortDir;
