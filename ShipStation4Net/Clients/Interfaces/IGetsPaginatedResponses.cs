@@ -22,10 +22,11 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    internal interface IGetsPaginatedResponses<T>
+    internal interface IGetsPaginatedResponses<T, FilterType>
+        where FilterType: class, IFilter
     {
-        Task<IList<T>> GetPageRangeAsync(int start, int end, int pageSize = 100, IFilter filter = null);
-        Task<IList<T>> GetPageAsync(int page, int pageSize = 100, IFilter filter = null);
-        Task<IList<T>> GetAllPagesAsync(IFilter filter);
+        Task<IList<T>> GetPageRangeAsync(int start, int end, int pageSize = 100, FilterType filter = null);
+        Task<IList<T>> GetPageAsync(int page, int pageSize = 100, FilterType filter = null);
+        Task<IList<T>> GetAllPagesAsync(FilterType filter);
     }
 }

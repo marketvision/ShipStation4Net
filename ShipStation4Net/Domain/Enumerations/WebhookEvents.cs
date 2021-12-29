@@ -17,18 +17,24 @@
 #endregion
 
 using Newtonsoft.Json;
+using ShipStation4Net.Converters;
+using System.Runtime.Serialization;
 
-namespace ShipStation4Net.Domain.Entities
+namespace ShipStation4Net.Domain.Enumerations
 {
-    public class User
+    [JsonConverter(typeof(StringEnumConverterIgnoreUnknown))]
+    public enum WebhookEvents
     {
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
+        [EnumMember(Value = "ORDER_NOTIFY")]
+        OrderNotify = 0,
 
-        [JsonProperty("userName")]
-        public string UserName { get; set; }
+        [EnumMember(Value = "ITEM_ORDER_NOTIFY")]
+        ItemOrderNotify = 1,
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [EnumMember(Value = "SHIP_NOTIFY")]
+        ShipNotify = 2,
+
+        [EnumMember(Value = "ITEM_SHIP_NOTIFY")]
+        ItemShipNotify = 3
     }
 }

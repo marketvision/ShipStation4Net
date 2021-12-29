@@ -17,18 +17,14 @@
 #endregion
 
 using Newtonsoft.Json;
+using ShipStation4Net.Domain.Entities;
+using System.Collections.Generic;
 
-namespace ShipStation4Net.Domain.Entities
+namespace ShipStation4Net.Responses
 {
-    public class User
+    public class WebhookResponse
     {
-        [JsonProperty("userId")]
-        public string UserId { get; set; }
-
-        [JsonProperty("userName")]
-        public string UserName { get; set; }
-
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("webhooks")]
+        public IList<Webhook> Webhooks { get; set; }
     }
 }

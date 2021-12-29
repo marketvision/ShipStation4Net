@@ -81,19 +81,19 @@ namespace ShipStation4Net.Domain.Entities
         /// The shipping insurance information associated with this order.
         /// </summary>
         [JsonProperty("insuranceOptions")]
-        public object InsuranceOptions { get; set; }
+        public InsuranceOptions InsuranceOptions { get; set; }
 
         /// <summary>
         /// Customs information that can be used to generate customs documents for international orders. 
         /// </summary>
         [JsonProperty("internationalOptions")]
-        public object InternationalOptions { get; set; }
+        public InternationalOptions InternationalOptions { get; set; }
 
         /// <summary>
         /// Various advanced options that may be available depending on the shipping carrier that is used to ship the order. 
         /// </summary>
         [JsonProperty("advancedOptions")]
-        public object AdvancedOptions { get; set; }
+        public AdvancedOptions AdvancedOptions { get; set; }
 
         /// <summary>
         /// Specifies whether a test label should be created. Default value: false.

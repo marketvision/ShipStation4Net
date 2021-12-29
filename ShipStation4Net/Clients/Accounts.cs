@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Accounts : ClientBase, ICreates<User>
+    public class Accounts : ClientBase, ICreates<Account>
     {
         public Accounts(Configuration configuration) : base(configuration)
         {
@@ -42,9 +42,9 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="newItem">The data for a new account.</param>
         /// <returns>The new account with fields updated by ShipStation.</returns>
-        public async Task<User> CreateAsync(User newItem)
+        public async Task<Account> CreateAsync(Account newItem)
         {
-            var accountCreatedResponse = await PostDataAsync<User, AccountCreatedResponse>("registeraccount", newItem).ConfigureAwait(false);
+            var accountCreatedResponse = await PostDataAsync<Account, AccountCreatedResponse>("registeraccount", newItem).ConfigureAwait(false);
             if (!accountCreatedResponse.Success)
             {
                 return null;

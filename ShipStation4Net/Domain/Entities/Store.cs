@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace ShipStation4Net.Domain.Entities
 {
-    public class Store
+    public class Store : IEntity
     {
         [JsonProperty("storeId")]
         public int? StoreId { get; set; }
@@ -65,12 +65,6 @@ namespace ShipStation4Net.Domain.Entities
 
         [JsonProperty("lastRefreshAttempt")]
         public DateTime? LastRefreshAttempt { get; set; }
-
-        [JsonProperty("createDate")]
-        public DateTime? CreateDate { get; set; }
-
-        [JsonProperty("modifyDate")]
-        public DateTime? ModifyDate { get; set; }
 
         [JsonProperty("autoRefresh")]
         public bool? AutoRefresh { get; set; }
