@@ -1,3 +1,8 @@
+#### 1.0.0 - 28.12.2021
+* Updated to match latest api documentation
+* Added support for Webhook api endpoints
+* Added support for multiple orders create/update
+
 #### 0.10.76 - 07.07.2021
 * Fixed issue with deserialization when ShipStation returns weight in inches - ignore weight units that are not expected
 
