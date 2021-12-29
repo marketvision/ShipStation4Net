@@ -1,3 +1,6 @@
+#### 1.0.1 - 29.12.2021
+* Updated product length, width, height, weigthOz from int to double
+
 #### 1.0.0 - 28.12.2021
 * Updated to match latest api documentation
 * Added support for Webhook api endpoints

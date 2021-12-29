@@ -62,27 +62,27 @@ namespace ShipStation4Net.Domain.Entities
         /// knowledge base here for more details.
         /// </summary>
         [JsonProperty("length")]
-        public int? Length { get; set; }
+        public double? Length { get; set; }
 
         /// <summary>
         /// The width of the product. Unit of measurement is UI dependent. No conversions will be made from one UOM to another. See our 
         /// knowledge base here for more details.
         /// </summary>
         [JsonProperty("width")]
-        public int? Width { get; set; }
+        public double? Width { get; set; }
 
         /// <summary>
         /// The height of the product. Unit of measurement is UI dependent. No conversions will be made from one UOM to another. See our 
         /// knowledge base here for more details.
         /// </summary>
         [JsonProperty("height")]
-        public int? Height { get; set; }
+        public double? Height { get; set; }
 
         /// <summary>
         /// The weight of a single item in ounces.
         /// </summary>
         [JsonProperty("weightOz")]
-        public int? WeightOz { get; set; }
+        public double? WeightOz { get; set; }
 
         /// <summary>
         /// Seller's private notes for the product.
