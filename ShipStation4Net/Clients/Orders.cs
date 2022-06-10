@@ -127,13 +127,21 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="newItem">A newly created order</param>
         /// <returns>The order with fields assigned to it by the API.</returns>
-        public Task<Order> CreateAsync(Order newItem)
+        public async Task<Order> CreateAsync(Order newItem)
         {
             if (newItem?.OrderNumber != null && newItem.OrderNumber.Length > 50)
             {
                 throw new ArgumentException("Order Number cannot exceed 50 symbols. Shipstation will truncate it without error", nameof(newItem));
             }
-            return PostDataAsync("createorder", newItem);
+
+            var response = await PostDataAsync("createorder", newItem);
+
+            if (response != null && (response.OrderDate != newItem?.OrderDate || response.Items?.Count != newItem?.Items?.Count || response.BillTo?.Street1 != newItem?.BillTo?.Street1))
+            {
+                throw new ArgumentException($"Order with id {0} was not synced correctly", newItem?.OrderNumber);
+            }
+
+            return response;
         }
 
         /// <summary>
