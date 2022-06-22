@@ -1,3 +1,6 @@
+#### 1.0.2 - 22.06.2022
+* Updated Newtonsoft.Json to 13.0.1
+
 #### 1.0.1 - 29.12.2021
 * Updated product length, width, height, weigthOz from int to double
 
