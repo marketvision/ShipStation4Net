@@ -130,7 +130,7 @@ namespace ShipStation4Net.Clients
             var voidLabelRequest = new JObject();
             voidLabelRequest["shipmentId"] = shipmentId;
 
-            var response = await PostDataAsync<JObject, SuccessResponse>("voidlabel", voidLabelRequest).ConfigureAwait(false);
+            var response = await PostDataAsync<JObject, ApprovedResponse>("voidlabel", voidLabelRequest).ConfigureAwait(false);
 
             return response.Success;
         }
