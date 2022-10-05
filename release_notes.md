@@ -1,3 +1,6 @@
+#### 1.0.3 - 05.10.2022
+* Fixed issue with Void Shipment Label api endpoint
+
 #### 1.0.2 - 22.06.2022
 * Updated Newtonsoft.Json to 13.0.1
 
