@@ -132,7 +132,7 @@ namespace ShipStation4Net.Clients
 
             var response = await PostDataAsync<JObject, ApprovedResponse>("voidlabel", voidLabelRequest).ConfigureAwait(false);
 
-            return response.Success;
+            return response.Approved;
         }
 
         /// <summary>
