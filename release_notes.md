@@ -1,3 +1,6 @@
+#### 1.0.4 - 14.12.2022
+* Added ProductType entity and changed property on Product entity
+
 #### 1.0.3 - 05.10.2022
 * Fixed issue with Void Shipment Label api endpoint
 
