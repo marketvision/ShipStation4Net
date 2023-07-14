@@ -1,3 +1,6 @@
+#### 1.0.5 - 14.07.2023
+* xcover & parcelguard insurance options added to enum
+
 #### 1.0.4 - 14.12.2022
 * Added ProductType entity and changed property on Product entity
 
