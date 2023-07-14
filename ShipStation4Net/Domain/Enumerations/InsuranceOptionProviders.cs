@@ -33,5 +33,11 @@ namespace ShipStation4Net.Domain.Enumerations
 
         [EnumMember(Value = "provider")]
         Provider = 2,
+
+        [EnumMember(Value = "xcover")]
+        Xcover = 3,
+
+        [EnumMember(Value = "parcelguard")]
+        Parcelguard = 4,
     }
 }
