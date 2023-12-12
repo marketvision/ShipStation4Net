@@ -1,3 +1,6 @@
+#### 1.0.6 - 12.12.2023
+* Added IGetsResourceUrlResponses to Fulfillments
+
 #### 1.0.5 - 14.07.2023
 * xcover &amp; parcelguard insurance options added to enum
 
