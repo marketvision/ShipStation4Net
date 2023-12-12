@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Fulfillments : ClientBase, IGetsPaginatedResponses<Fulfillment, FulfillmentsFilter>, IGets<Fulfillment>
+    public class Fulfillments : ClientBase, IGetsPaginatedResponses<Fulfillment, FulfillmentsFilter>, IGets<Fulfillment>, IGetsResourceUrlResponses<Fulfillment>
     {
         public Fulfillments(Configuration configuration) : base(configuration)
         {
@@ -57,7 +57,27 @@ namespace ShipStation4Net.Clients
             return response.Items[0];
         }
 
-        public async Task<IList<Fulfillment>> GetPageAsync(int page, int pageSize = 100, FulfillmentsFilter filter = null)
+        private async Task<IList<Fulfillment>> GetAllPagesAsync(FulfillmentsFilter filter, string resourceUrl)
+        {
+            var items = new List<Fulfillment>();
+            filter = filter ?? new FulfillmentsFilter();
+
+            var pageOne = await GetDataAsync<PaginatedResponse<Fulfillment>>(resourceUrl, filter).ConfigureAwait(false);
+            items.AddRange(pageOne.Items);
+            if (pageOne.Pages > 1)
+            {
+                items.AddRange(await GetPageRangeAsync(2, pageOne.Pages, filter.PageSize, filter, resourceUrl).ConfigureAwait(false));
+            }
+
+            return items;
+        }
+
+        public  Task<IList<Fulfillment>> GetPageAsync(int page, int pageSize = 100, FulfillmentsFilter filter = null)
+        {
+            return GetPageAsync(page, pageSize, filter, "");
+        }
+
+        private async Task<IList<Fulfillment>> GetPageAsync(int page, int pageSize, FulfillmentsFilter filter, string resourceUrl)
         {
             if (page < 1) throw new ArgumentException(nameof(page), "Cannot be a negative or zero");
             if (pageSize < 1 || pageSize > 500) throw new ArgumentOutOfRangeException(nameof(pageSize), "Should be in range 1..500");
@@ -67,11 +87,16 @@ namespace ShipStation4Net.Clients
             filter.Page = page;
             filter.PageSize = pageSize;
 
-            var response = await GetDataAsync<PaginatedResponse<Fulfillment>>(filter).ConfigureAwait(false);
+            var response = await GetDataAsync<PaginatedResponse<Fulfillment>>(resourceUrl, filter).ConfigureAwait(false);
             return response.Items;
         }
 
-        public async Task<IList<Fulfillment>> GetPageRangeAsync(int start, int end, int pageSize = 100, FulfillmentsFilter filter = null)
+        public Task<IList<Fulfillment>> GetPageRangeAsync(int start, int end, int pageSize = 100, FulfillmentsFilter filter = null)
+        {
+            return GetPageRangeAsync(start, end, pageSize, filter, "");
+        }
+
+        public async Task<IList<Fulfillment>> GetPageRangeAsync(int start, int end, int pageSize, FulfillmentsFilter filter, string resourceUrl)
         {
             if (start < 1) throw new ArgumentException(nameof(start), "Cannot be a negative or zero");
             if (start > end) throw new ArgumentException(nameof(end), "Invalid page range");
@@ -81,9 +106,14 @@ namespace ShipStation4Net.Clients
 
             for (int i = start; i <= end; i++)
             {
-                items.AddRange(await GetPageAsync(i, pageSize, filter).ConfigureAwait(false));
+                items.AddRange(await GetPageAsync(i, pageSize, filter, resourceUrl).ConfigureAwait(false));
             }
             return items;
+        }
+
+        public Task<IList<Fulfillment>> GetResourceResponsesAsync(string resourceUrl)
+        {
+            return GetAllPagesAsync(null, resourceUrl);
         }
     }
 }
