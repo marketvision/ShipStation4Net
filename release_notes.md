@@ -1,3 +1,6 @@
+#### 1.0.7 - 13.12.2023
+* Made interfaces public to simplify unit testing
+
 #### 1.0.6 - 12.12.2023
 * Added IGetsResourceUrlResponses to Fulfillments
 
