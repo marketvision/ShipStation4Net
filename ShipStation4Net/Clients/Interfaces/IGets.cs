@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    internal interface IGets<T>
+    public interface IGets<T>
     {
         Task<T> GetAsync(int id);
     }

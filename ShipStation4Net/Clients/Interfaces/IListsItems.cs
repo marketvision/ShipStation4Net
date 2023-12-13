@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    internal interface IListsItems<T>
+    public interface IListsItems<T>
     {
         Task<IList<T>> GetItemsAsync();
     }

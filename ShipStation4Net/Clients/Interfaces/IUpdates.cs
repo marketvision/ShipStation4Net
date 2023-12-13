@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    internal interface IUpdates<T>
+    public interface IUpdates<T>
     {
         Task<T> UpdateAsync(int id, T item);
     }

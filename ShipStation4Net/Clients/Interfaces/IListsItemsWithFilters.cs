@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    internal interface IListsItemsWithFilters<T>
+    public interface IListsItemsWithFilters<T>
     {
         Task<IList<T>> GetItemsAsync(IFilter filter);
     }

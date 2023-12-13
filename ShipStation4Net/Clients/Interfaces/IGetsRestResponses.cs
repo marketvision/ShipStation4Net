@@ -20,7 +20,7 @@ using ShipStation4Net.Responses;
 
 namespace ShipStation4Net.Clients
 {
-    internal interface IGetsRestResponses<T>
+    public interface IGetsRestResponses<T>
     {
         IRestResponse<T> GetAsync(int id);
     }
