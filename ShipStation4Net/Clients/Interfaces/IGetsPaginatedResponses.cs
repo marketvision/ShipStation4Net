@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    internal interface IGetsPaginatedResponses<T, FilterType>
+    public interface IGetsPaginatedResponses<T, FilterType>
         where FilterType: class, IFilter
     {
         Task<IList<T>> GetPageRangeAsync(int start, int end, int pageSize = 100, FilterType filter = null);

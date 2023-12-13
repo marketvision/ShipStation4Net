@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    internal interface ICreates<T>
+    public interface ICreates<T>
     {
         Task<T> CreateAsync(T newItem);
     }

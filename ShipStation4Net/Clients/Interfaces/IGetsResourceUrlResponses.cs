@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    internal interface IGetsResourceUrlResponses<T>
+    public interface IGetsResourceUrlResponses<T>
     {
         Task<IList<T>> GetResourceResponsesAsync(string resourceUrl);
     }
