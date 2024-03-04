@@ -241,10 +241,6 @@ namespace ShipStation4Net
 				}
 
 				var httpResponse = await client.SendAsync(message).ConfigureAwait(false);
-				ApiLimitRemaining = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Remaining").FirstOrDefault());
-				LimitResetSeconds = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Reset").FirstOrDefault());
-				ApiLimit = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Limit").FirstOrDefault());
-
 				if (!httpResponse.IsSuccessStatusCode)
 				{
 					switch (httpResponse.StatusCode)
@@ -258,6 +254,9 @@ namespace ShipStation4Net
 						case (HttpStatusCode)405:
 							throw new MethodNotAllowedException(httpResponse.ReasonPhrase, httpResponse);
 						case (HttpStatusCode)429:
+							ApiLimitRemaining = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Remaining").FirstOrDefault());
+							LimitResetSeconds = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Reset").FirstOrDefault());
+							ApiLimit = int.Parse(httpResponse.Headers.GetValues("X-Rate-Limit-Limit").FirstOrDefault());
 							throw new ApiLimitReachedException(
 								$"{httpResponse.ReasonPhrase}\nThere are {LimitResetSeconds} seconds remaning until a request reset.",
 								httpResponse,
