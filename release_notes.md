@@ -1,3 +1,6 @@
+#### 1.0.8 - 04.03.2024
+* Parse apiLimitRemaining & limitResetSeconds headers only on 429 response + a bit more refactoring
+
 #### 1.0.7 - 13.12.2023
 * Made interfaces public to simplify unit testing
 

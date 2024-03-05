@@ -27,15 +27,9 @@ namespace ShipStation4Net
         
         public string UserName { get; set; }
         public string UserApiKey { get; set; }
-        public int ApiLimit { get; set; }
         public int RecordsPerPage { get; set; }
         public bool AllowDeletions { get; set; }
         public string PartnerId { get; set; }
-
-        public Configuration()
-        {
-            ApiLimit = 40;
-        }
 
         internal void AreConfigurationSet()
         {
