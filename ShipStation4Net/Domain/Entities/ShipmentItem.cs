@@ -23,7 +23,7 @@ namespace ShipStation4Net.Domain.Entities
     public class ShipmentItem
     {
         [JsonProperty("orderItemId")]
-        public int? OrderItemId { get; set; }
+        public long? OrderItemId { get; set; }
 
         [JsonProperty("lineItemKey")]
         public string LineItemKey { get; set; }
