@@ -1,3 +1,6 @@
+#### 1.0.9 - 15.03.2024
+* Switch OrderItem.OrderItemId to be long instead of int
+
 #### 1.0.8 - 04.03.2024
 * Parse apiLimitRemaining &amp; limitResetSeconds headers only on 429 response + a bit more refactoring
 
