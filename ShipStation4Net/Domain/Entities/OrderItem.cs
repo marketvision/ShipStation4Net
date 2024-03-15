@@ -27,7 +27,7 @@ namespace ShipStation4Net.Domain.Entities
         /// The system generated identifier for the OrderItem. This is a read-only field.
         /// </summary>
         [JsonProperty("orderItemId")]
-        public int? OrderItemId { get; set; }
+        public long? OrderItemId { get; set; }
 
         /// <summary>
         /// An identifier for the OrderItem in the originating system.
