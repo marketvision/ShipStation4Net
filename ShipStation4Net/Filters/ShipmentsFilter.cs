@@ -42,7 +42,7 @@ namespace ShipStation4Net.Filters
         /// <summary>
         /// Returns shipments whose orders have the specified order ID.
         /// </summary>
-        public int? OrderId { get; set; }
+        public long? OrderId { get; set; }
 
         /// <summary>
         /// Returns shipments shipped with the specified carrier.

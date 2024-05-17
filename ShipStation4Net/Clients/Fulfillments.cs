@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Fulfillments : ClientBase, IGetsPaginatedResponses<Fulfillment, FulfillmentsFilter>, IGets<Fulfillment>, IGetsResourceUrlResponses<Fulfillment>
+    public class Fulfillments : ClientBase, IGetsPaginatedResponses<Fulfillment, FulfillmentsFilter>, IGets<Fulfillment, int>, IGetsResourceUrlResponses<Fulfillment>
     {
         public Fulfillments(Configuration configuration) : base(configuration)
         {

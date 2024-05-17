@@ -26,7 +26,7 @@ using System.Collections.Generic;
 
 namespace ShipStation4Net.Clients
 {
-    public class Stores : ClientBase, IGets<Store>, IUpdates<Store>
+    public class Stores : ClientBase, IGets<Store, int>, IUpdates<Store>
     {
         public Stores(Configuration configuration) : base(configuration)
         {

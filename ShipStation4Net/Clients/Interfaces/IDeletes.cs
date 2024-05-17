@@ -20,8 +20,8 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients.Interfaces
 {
-    public interface IDeletes<T>
+    public interface IDeletes<T, TId>
     {
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(TId id);
     }
 }

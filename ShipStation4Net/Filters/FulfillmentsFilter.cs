@@ -32,7 +32,7 @@ namespace ShipStation4Net.Filters
         /// <summary>
         /// Returns fulfillments whose orders have the specified order ID.
         /// </summary>
-        public int? OrderId { get; set; }
+        public long? OrderId { get; set; }
 
         /// <summary>
         /// Returns fulfillments whose orders have the specified order number.

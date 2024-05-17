@@ -29,7 +29,7 @@ namespace ShipStation4Net.Domain.Entities
         /// The system generated identifier for the order. This is a read-only field.
         /// </summary>
         [JsonProperty("orderId")]
-        public int? OrderId { get; set; }
+        public long? OrderId { get; set; }
 
         /// <summary>
         /// A user-defined order number used to identify an order.

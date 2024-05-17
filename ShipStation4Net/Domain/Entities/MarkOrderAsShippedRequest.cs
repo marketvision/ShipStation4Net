@@ -26,7 +26,7 @@ namespace ShipStation4Net.Domain.Entities
         /// Identifies the order that will be marked as shipped.
         /// </summary>
         [JsonProperty("orderId")]
-        public int OrderId { get; set; }
+        public long OrderId { get; set; }
 
         /// <summary>
         /// Code of the carrier that is marked as having shipped the order.

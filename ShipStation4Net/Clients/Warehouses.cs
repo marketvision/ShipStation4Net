@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Warehouses : ClientBase, IListsItems<Warehouse>, IGets<Warehouse>, IUpdates<Warehouse>, ICreates<Warehouse>, IDeletes<Warehouse>
+    public class Warehouses : ClientBase, IListsItems<Warehouse>, IGets<Warehouse, int>, IUpdates<Warehouse>, ICreates<Warehouse>, IDeletes<Warehouse, int>
     {
         public Warehouses(Configuration configuration) : base(configuration)
         {
