@@ -9,7 +9,7 @@ namespace ShipStation4Net.Tests
 {
     public class TestOrders : TestBase
     {
-        int testOrderId = 14920239;
+        long testOrderId = 14920239;
 
         [Fact]
         public async void TestGetOrder()

@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace ShipStation4Net.Clients
 {
-    public class Orders : ClientBase, IGetsPaginatedResponses<Order, OrdersFilter>, ICreates<Order>, IGets<Order>, IGetsResourceUrlResponses<Order>, IDeletes<Order>
+    public class Orders : ClientBase, IGetsPaginatedResponses<Order, OrdersFilter>, ICreates<Order>, IGets<Order, long>, IGetsResourceUrlResponses<Order>, IDeletes<Order, long>
     {
         public Orders(Configuration configuration) : base(configuration)
         {
@@ -178,7 +178,7 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="id">The id of the order to retrieve.</param>
         /// <returns>The order specified by the id.</returns>
-        public Task<Order> GetAsync(int id)
+        public Task<Order> GetAsync(long id)
         {
             return GetDataAsync<Order>(id);
         }
@@ -189,7 +189,7 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="id">The id of the order to delete.</param>
         /// <returns>A boolean representing whether or not the delete was successful.</returns>
-        public Task<bool> DeleteAsync(int id)
+        public Task<bool> DeleteAsync(long id)
         {
             return DeleteDataAsync(id);
         }
@@ -201,7 +201,7 @@ namespace ShipStation4Net.Clients
         /// <param name="userId">The user id to assign</param>
         /// <param name="orderIds">The list of order ids to assign to the user</param>
         /// <returns>A boolean representing whether or not the request was successful.</returns>
-        public async Task<bool> AssignUserToOrderAsync(string userId, IList<int> orderIds)
+        public async Task<bool> AssignUserToOrderAsync(string userId, IList<long> orderIds)
         {
             var assignUserRequest = new JObject();
             assignUserRequest["orderIds"] = new JArray(orderIds);
@@ -230,7 +230,7 @@ namespace ShipStation4Net.Clients
         /// <param name="orderId">The id of the order to put on hold.</param>
         /// <param name="holdUntilDate">Date when order is moved from on_hold status to awaiting_shipment.</param>
         /// <returns>A response that represents whether or not the request was completed successfully.</returns>
-        public async Task<bool> HoldOrderUntilAsync(int orderId, DateTime holdUntilDate)
+        public async Task<bool> HoldOrderUntilAsync(long orderId, DateTime holdUntilDate)
         {
             var holdOrderRequest = new JObject();
             holdOrderRequest["orderId"] = orderId;
@@ -288,7 +288,7 @@ namespace ShipStation4Net.Clients
         /// <param name="orderId">Identifies the order whose tag will be added.</param>
         /// <param name="tagId">Identifies the tag to add.</param>
         /// <returns>A response representing whether or not the request was successful.</returns>
-        public async Task<bool> AddTagToOrderAsync(int orderId, int tagId)
+        public async Task<bool> AddTagToOrderAsync(long orderId, int tagId)
         {
             var addTagRequest = new JObject();
             addTagRequest["orderId"] = orderId;
@@ -305,7 +305,7 @@ namespace ShipStation4Net.Clients
         /// <param name="orderId">Identifies the order whose tag will be removed.</param>
         /// <param name="tagId"></param>
         /// <returns>A response that represents whether or not the request was successful.</returns>
-        public async Task<bool> RemoveTagFromOrderAsync(int orderId, int tagId)
+        public async Task<bool> RemoveTagFromOrderAsync(long orderId, int tagId)
         {
             var removeTagRequest = new JObject();
             removeTagRequest["orderId"] = orderId;
@@ -322,7 +322,7 @@ namespace ShipStation4Net.Clients
         /// </summary>
         /// <param name="orderId">Identifies the order that will be restored to awaiting_shipment from on_hold.</param>
         /// <returns>A response that represents whether or not the request was successful.</returns>
-        public async Task<bool> RestoreOrderFromOnHoldAsync(int orderId)
+        public async Task<bool> RestoreOrderFromOnHoldAsync(long orderId)
         {
             var restoreOrderRequest = new JObject();
             restoreOrderRequest["orderId"] = orderId;
@@ -338,7 +338,7 @@ namespace ShipStation4Net.Clients
         /// <param name="orderIds">Identifies set of orders that will have the user unassigned. Please note that if ANY of the orders 
         /// within the array are not found, then no orders will have their users unassigned.</param>
         /// <returns>A response that represents whether or not the request was successful.</returns>
-        public async Task<bool> UnassignUserFromOrderAsync(IList<int> orderIds)
+        public async Task<bool> UnassignUserFromOrderAsync(IList<long> orderIds)
         {
             var unassignUserRequest = new JObject();
             unassignUserRequest["orderIds"] = new JArray(orderIds);

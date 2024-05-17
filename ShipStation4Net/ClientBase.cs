@@ -155,6 +155,11 @@ namespace ShipStation4Net
             return GetDataAsync<T>(id.ToString(), null);
         }
 
+        protected Task<T> GetDataAsync<T>(long id)
+        {
+            return GetDataAsync<T>(id.ToString(), null);
+        }
+
         protected Task<T> PostDataAsync<T>(T data)
         {
             return PostDataAsync(BaseUri, data);
@@ -196,6 +201,11 @@ namespace ShipStation4Net
         }
 
         protected Task<bool> DeleteDataAsync(int id)
+        {
+            return DeleteDataAsync(string.Format("{0}/{1}", BaseUri, id));
+        }
+
+        protected Task<bool> DeleteDataAsync(long id)
         {
             return DeleteDataAsync(string.Format("{0}/{1}", BaseUri, id));
         }

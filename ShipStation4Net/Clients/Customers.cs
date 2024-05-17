@@ -26,7 +26,7 @@ using ShipStation4Net.Responses;
 
 namespace ShipStation4Net.Clients
 {
-    public class Customers : ClientBase, IGets<Customer>, IGetsPaginatedResponses<Customer, CustomersFilter>
+    public class Customers : ClientBase, IGets<Customer, int>, IGetsPaginatedResponses<Customer, CustomersFilter>
     {
         public Customers(Configuration configuration) : base(configuration)
         {

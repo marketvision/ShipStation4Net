@@ -23,7 +23,7 @@ namespace ShipStation4Net.Responses
     public class MarkOrderAsShippedResponse
     {
         [JsonProperty("orderId")]
-        public int OrderId { get; set; }
+        public long OrderId { get; set; }
 
         [JsonProperty("orderNumber")]
         public string OrderNumber { get; set; }
