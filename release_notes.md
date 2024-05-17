@@ -1,3 +1,6 @@
+#### 1.0.11 - 17.05.2024
+* Switch Order.OrderId to be long instead of int
+
 #### 1.0.10 - 15.03.2024
 * Adjusted ShipmentItem.OrderItemId as well
 
