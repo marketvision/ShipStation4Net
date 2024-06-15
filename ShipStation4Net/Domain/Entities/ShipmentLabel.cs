@@ -49,7 +49,7 @@ namespace ShipStation4Net.Domain.Entities
         public double? ShipmentCost { get; set; }
 
         [JsonProperty("insuranceCost")]
-        public int? InsuranceCost { get; set; }
+        public double? InsuranceCost { get; set; }
 
         [JsonProperty("trackingNumber")]
         public string TrackingNumber { get; set; }
