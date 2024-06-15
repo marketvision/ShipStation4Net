@@ -1,3 +1,6 @@
+#### 1.0.12 - 15.06.2024
+* Fixed insuranceCost type on ShippingLabel object
+
 #### 1.0.11 - 17.05.2024
 * Switch Order.OrderId to be long instead of int
 
